@@ -1,1 +1,9 @@
-# dise-o-G30-2025
+# Trabajo Practico Integrador
+## UTN Diseño 2025
+
+
+INTEGRANTES:
+
+
+* Cesar Martin Buxman Cramaro
+* Alexis Francisco Schmidt
