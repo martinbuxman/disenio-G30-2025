@@ -5,13 +5,22 @@
 package tp.g30.clases;
 
 import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import tp.g30.enums.TipoDocumento;
 
 /**
  *
  * @author Cesar
  */
+@Entity
 public class Huesped extends Persona{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String telefono;
     private String email;
     private String ocupacion;

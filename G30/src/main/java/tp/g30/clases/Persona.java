@@ -5,22 +5,38 @@
 package tp.g30.clases;
 
 import java.time.LocalDate;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import tp.g30.enums.TipoDocumento;
 /**
  *
  * @author Cesar
  */
+@Entity
 public class Persona {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String apellido;
     private String nombre;
     private TipoDocumento tipo_documento;
-    private int num_documento;
-    private int cuit;
+    private long num_documento;
+    private long cuit;
     private LocalDate fecha_nacimiento;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "direccion_id")
     private Direccion direccion;
+
     private String nacionalidad;
 
-    public Persona(String apellido, String nombre, TipoDocumento tipo_documento, int num_documento, int cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
+    public Persona(String apellido, String nombre, TipoDocumento tipo_documento, long num_documento, long cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
         this.apellido = apellido;
         this.nombre = nombre;
         this.tipo_documento = tipo_documento;
@@ -41,10 +57,10 @@ public class Persona {
     public TipoDocumento getTipoDocumento(){
         return this.tipo_documento;
     }
-    public int getNumDocumento(){
+    public long getNumDocumento(){
         return this.num_documento;
     }
-    public int getCUIT(){
+    public long getCUIT(){
         return this.cuit;
     }
     public LocalDate getFechaNacimiento(){

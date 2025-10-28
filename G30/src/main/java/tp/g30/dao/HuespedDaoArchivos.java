@@ -17,9 +17,12 @@ import java.util.List;
 
 import tp.g30.clases.Huesped;
 import tp.g30.dto.HuespedDTO;
-
+import org.springframework.stereotype.Repository;
+@Repository
 public class HuespedDaoArchivos implements HuespedDAO{
     @Override
+    public void guardarHuesped(Huesped huesped) {
+    }
     public void modificar_huesped(HuespedDTO huespedOriginal, HuespedDTO huespedModificado) {
     File archivoOriginal = new File("src/main/java/tp/desarrollo/db/huespedes.csv");
     File archivoTmp = new File("src/main/java/tp/desarrollo/db/huespedes_tmp.csv");
@@ -117,7 +120,7 @@ public class HuespedDaoArchivos implements HuespedDAO{
         }
     }
     
-    public boolean existe_documento(TipoDocumento tipoDocumento, int numeroDocumento){
+    public boolean existe_documento(TipoDocumento tipoDocumento, long numeroDocumento){
         String archivo = "src/main/java/tp/desarrollo/db/huespedes.csv";
         String linea;
         boolean existe = false;

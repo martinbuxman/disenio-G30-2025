@@ -12,10 +12,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import tp.g30.dao.HuespedDaoArchivos;
 import tp.g30.dao.UsuarioDaoArchivos;
 import tp.g30.enums.TipoDocumento;
 import tp.g30.dao.ReservaDaoArchivos;
+import tp.g30.dao.HuespedDaoDB;
 import tp.g30.excepciones.HuespedConReservasExcepcion;
 
 /**
@@ -23,19 +27,24 @@ import tp.g30.excepciones.HuespedConReservasExcepcion;
  * @author juanc
  */
 
+@Service
+
 public class Gestor_Usuario{
 
     private HuespedDaoArchivos huespedDao;
     private UsuarioDaoArchivos usuarioDao;
     private ReservaDaoArchivos reservaDao;
+    private HuespedDaoDB huespedDaoDB;
 
     private final Scanner scanner = new Scanner(System.in);
 
     // --- CAMBIO: Constructor actualizado para recibir todas las dependencias necesarias ---
-    public Gestor_Usuario(HuespedDaoArchivos huespedDao, UsuarioDaoArchivos usuarioDao, ReservaDaoArchivos reservaDao) {
+    @Autowired
+    public Gestor_Usuario(HuespedDaoArchivos huespedDao, UsuarioDaoArchivos usuarioDao, ReservaDaoArchivos reservaDao, HuespedDaoDB huespedDaoDB) {
         this.huespedDao = huespedDao;
         this.usuarioDao = usuarioDao;
         this.reservaDao = reservaDao;
+        this.huespedDaoDB = huespedDaoDB;
     }
 
     public void modificar_huesped(Huesped huesped) {
@@ -457,7 +466,13 @@ public class Gestor_Usuario{
         HuespedDTO nuevoHuesped = new HuespedDTO(telefono, email, ocupacion, apellido, nombre, tipoDocumento, Integer.parseInt(numeroDocumento), cuit, fechaNacimiento, new Direccion(calle, numero, departamento, piso, codigoPostal, localidad, provincia, pais), nacionalidad);
         return nuevoHuesped;
     }
-    
+        public Huesped dar_alta_huesped(Huesped huesped) {
+        if (huespedDaoDB.existe_documento(huesped.getTipoDocumento(), huesped.getNumDocumento())) {
+            throw new RuntimeException("El documento ya existe");
+        }
+        huespedDaoDB.guardarHuesped(huesped);
+        return huesped;
+    }
     public void dar_alta_huesped(){
         while(true){
         System.out.println("Ingrese los datos del nuevo huésped:");

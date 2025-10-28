@@ -19,10 +19,12 @@ tp\g30\clases\Consumo.class
 tp\g30\enums\TipoDocumento.class
 tp\g30\clases\Factura.class
 tp\g30\clases\Cheque.class
+tp\g30\dao\HuespedDaoDB.class
 tp\g30\dao\ReservaDaoArchivos.class
 tp\g30\clases\Estado_Habitacion.class
 tp\g30\gestores\Gestor_Reserva.class
 tp\g30\clases\Estadia.class
+tp\g30\controller\HuespedController.class
 tp\g30\gestores\Gestor_Habitacion.class
 tp\g30\clases\Huesped.class
 tp\g30\clases\Persona.class

@@ -4,12 +4,23 @@
  */
 package tp.g30.clases;
 
+import jakarta.persistence.Embeddable;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 /**
  *
  * @author Cesar
  */
+@Entity
 public class Direccion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int id;
+    
     String calle;
     int numero;
     String departamento;

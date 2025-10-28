@@ -3,7 +3,8 @@ package tp.g30.dao;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+import org.springframework.stereotype.Repository;
+@Repository
 public class UsuarioDaoArchivos {
 
     private final String archivo = "src/main/java/tp/desarrollo/db/usuarios.csv";

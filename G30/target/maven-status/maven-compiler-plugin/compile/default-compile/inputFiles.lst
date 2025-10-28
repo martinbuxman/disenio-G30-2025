@@ -17,8 +17,10 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Servi
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta_Credito.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta_Debito.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\HuespedController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\PingController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\HuespedDaoArchivos.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\HuespedDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\ReservaDaoArchivos.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\UsuarioDaoArchivos.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\HuespedDTO.java
