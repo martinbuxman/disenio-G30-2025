@@ -12,7 +12,6 @@ import java.util.List;
 public class HuespedController {
 
     private final Gestor_Usuario gestorHuesped;
-
     public HuespedController(Gestor_Usuario gestorHuesped) {
         this.gestorHuesped = gestorHuesped;
     }
