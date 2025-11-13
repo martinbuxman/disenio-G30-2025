@@ -28,8 +28,8 @@ tp\g30\gestores\Gestor_Habitacion.class
 tp\g30\clases\Huesped.class
 tp\g30\clases\Persona.class
 tp\g30\gestores\Gestor_Usuario.class
+tp\g30\controller\ViewController.class
 tp\g30\dao\UsuarioDaoArchivos.class
-tp\g30\clases\NotBlank.class
 tp\g30\interfaces\Responsable_de_pagoDAO.class
 tp\g30\clases\Divisa.class
 tp\g30\clases\Responsable_de_pago.class

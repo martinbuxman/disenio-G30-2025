@@ -6,8 +6,6 @@ package tp.g30.clases;
 
 import java.time.LocalDate;
 
-
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
@@ -20,8 +18,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import tp.g30.enums.TipoDocumento;
-
-import jakarta.validation.constraints.*;
 /**
  *
  * @author Cesar
@@ -32,29 +28,22 @@ public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
-    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
-    @NotNull(message = "Debe seleccionar un tipo de documento")
     @JsonProperty("tipo_documento")
     private TipoDocumento tipo_documento;
-    @Min(value = 8, message = "El número de documento debe tener 8 dígitos")
     @JsonProperty("num_documento")
     private long num_documento;
-    @Positive(message = "El CUIT debe ser un número positivo")
     @JsonProperty("cuit")
     private long cuit;
-    @Past(message = "La fecha de nacimiento debe ser anterior a hoy")
     @JsonProperty("fecha_nacimiento")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fecha_nacimiento;
     
-    @NotNull(message = "Debe ingresar una dirección")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "direccion_id")
     private Direccion direccion;
-    @NotBlank(message = "La nacionalidad es obligatoria")
+
     private String nacionalidad;
 
     public Persona(String apellido, String nombre, TipoDocumento tipo_documento, long num_documento, long cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
