@@ -6,6 +6,7 @@ package tp.g30.clases;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,11 @@ import jakarta.persistence.Id;
 import tp.g30.enums.TipoDocumento;
 
 import jakarta.validation.constraints.*;
+import tp.g30.enums.CondicionIVA;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+
 
 /**
  *
@@ -31,14 +37,22 @@ public class Huesped extends Persona{
     @NotBlank(message = "La ocupación es obligatoria")
     private String ocupacion;
 
-    public Huesped(String telefono, String email, String ocupacion, String apellido, String nombre, TipoDocumento tipo_documento, int num_documento, int cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CondicionIVA condicionIVA = CondicionIVA.CONSUMIDOR_FINAL; // Valor por defecto
+
+    public Huesped(String telefono, String email, String ocupacion, CondicionIVA condicionIVA,
+                   String apellido, String nombre, TipoDocumento tipo_documento, int num_documento,
+                   int cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
         super(apellido, nombre, tipo_documento, num_documento, cuit, fecha_nacimiento, direccion, nacionalidad);
         this.telefono = telefono;
         this.email = email;
         this.ocupacion = ocupacion;
+        this.condicionIVA = (condicionIVA != null) ? condicionIVA : CondicionIVA.CONSUMIDOR_FINAL;
     }
     public Huesped() {
         super();
+         this.condicionIVA = CondicionIVA.CONSUMIDOR_FINAL;
     }
     @Override
     public String toString() {
@@ -55,6 +69,8 @@ public class Huesped extends Persona{
     public String getOcupacion(){
         return  this.ocupacion;
     }
+    public CondicionIVA getCondicionIVA() { return condicionIVA; }
+    
     
     //SETTERS
     public void setTelefono(String telefono){
@@ -65,5 +81,8 @@ public class Huesped extends Persona{
     }
     public void setOcupacion(String ocupacion){
         this.ocupacion = ocupacion;
+    }
+    public void setCondicionIVA(CondicionIVA condicionIVA) {
+        this.condicionIVA = (condicionIVA != null) ? condicionIVA : CondicionIVA.CONSUMIDOR_FINAL;
     }
 }
