@@ -116,7 +116,12 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Condición frente al IVA <span class="text-danger">(*)</span></label>
-                        <input type="text" name="" class="form-control">
+                        <select name="condicion_iva" class="form-select">
+                            <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
+                            <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                            <option value="MONOTRIBUTISTA">Monotributista</option>
+                            <option value="EXENTO">Exento</option>
+                        </select>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">CUIT</label>

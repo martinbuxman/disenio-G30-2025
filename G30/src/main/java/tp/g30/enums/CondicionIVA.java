@@ -4,5 +4,5 @@ public enum CondicionIVA {
     RESPONSABLE_INSCRIPTO,
     MONOTRIBUTO,
     CONSUMIDOR_FINAL,
-    EXCENTO
+    EXENTO
 }
