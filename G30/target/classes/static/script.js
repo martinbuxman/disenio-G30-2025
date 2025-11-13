@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 numero: parseInt(formData.get('direccion.numero')),
                 departamento: formData.get('direccion.departamento'),
                 piso: parseInt(formData.get('direccion.piso')) || 0,
-                codigo_postal: parseInt(formData.get('direccion.codigo_postal')) || 0,
+                codigoPostal: (function(){ const cp = formData.get('direccion.codigoPostal'); return cp && cp.trim() !== '' ? parseInt(cp,10) : null; })(),
                 localidad: formData.get('direccion.localidad'),
                 provincia: formData.get('direccion.provincia'),
                 pais: formData.get('direccion.pais')
@@ -31,8 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
             ocupacion: formData.get('ocupacion'),
             condicionIVA: formData.get('condicionIVA')
         }
-        
-        // Debug logs removed
         
         fetch('/api/huespedes/alta', {
             method: 'POST',

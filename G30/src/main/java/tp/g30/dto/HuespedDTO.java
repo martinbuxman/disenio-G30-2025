@@ -35,7 +35,6 @@ public class HuespedDTO extends PersonaDTO{
         this.condicionIVA =  condicionIVA;
     }
     public HuespedDTO(){
-        this.condicionIVA = CondicionIVA.CONSUMIDOR_FINAL;
     }
     public HuespedDTO(Huesped huesped){
         super(huesped.getApellido(), huesped.getNombre(), huesped.getTipoDocumento(), huesped.getNumDocumento(),
