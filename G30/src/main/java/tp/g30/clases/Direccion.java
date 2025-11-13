@@ -4,8 +4,6 @@
  */
 package tp.g30.clases;
 
-import jakarta.persistence.Embeddable;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -80,7 +78,7 @@ public class Direccion {
     public void setLocalidad(String localidad) {
         this.localidad = localidad;
     }
-    public void setProvincia(String provinica) {
+    public void setProvincia(String provincia) {
         this.provincia = provincia;
     }
     public void setPais(String pais) {
@@ -89,7 +87,7 @@ public class Direccion {
     public void setDepartamento(String depa) {
         this.departamento = depa;
     }
-    public void setPiso(int Piso) {
+    public void setPiso(int piso) {
         this.piso = piso;
     }
 }

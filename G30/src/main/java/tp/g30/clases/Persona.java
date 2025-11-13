@@ -6,11 +6,15 @@ package tp.g30.clases;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import tp.g30.enums.TipoDocumento;
@@ -19,15 +23,21 @@ import tp.g30.enums.TipoDocumento;
  * @author Cesar
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String apellido;
     private String nombre;
+    @JsonProperty("tipo_documento")
     private TipoDocumento tipo_documento;
+    @JsonProperty("num_documento")
     private long num_documento;
+    @JsonProperty("cuit")
     private long cuit;
+    @JsonProperty("fecha_nacimiento")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fecha_nacimiento;
     
     @OneToOne(cascade = CascadeType.ALL)
@@ -46,7 +56,8 @@ public class Persona {
         this.direccion = direccion;
         this.nacionalidad = nacionalidad;
     }
-    
+    public Persona() {
+    }
     //GETTERS
     public String getApellido(){
         return this.apellido;
@@ -71,5 +82,31 @@ public class Persona {
     }
     public String getNacionalidad(){
         return this.nacionalidad;
+    }
+    
+    //SETTERS
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public void setTipoDocumento(TipoDocumento tipo_documento) {
+        this.tipo_documento = tipo_documento;
+    }
+    public void setNumDocumento(long num_documento) {
+        this.num_documento = num_documento;
+    }
+    public void setCUIT(long cuit) {
+        this.cuit = cuit;
+    }
+    public void setFechaNacimiento(LocalDate fecha_nacimiento) {
+        this.fecha_nacimiento = fecha_nacimiento;
+    }
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
 }

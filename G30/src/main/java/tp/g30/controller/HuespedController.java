@@ -17,7 +17,7 @@ public class HuespedController {
     }
 
     @PostMapping("/alta")
-    public void altaHuesped(@RequestBody Huesped huesped) {
-        gestorHuesped.dar_alta_huesped(huesped);
+    public Huesped altaHuesped(@RequestBody Huesped huesped) {
+        return gestorHuesped.dar_alta_huesped(huesped);
     }
 }

@@ -21,11 +21,12 @@ public class HuespedDaoDB implements HuespedDAO {
     @Transactional
     public void guardarHuesped(Huesped huesped) {
         em.persist(huesped);
+        em.flush();
     }
     
     @Override
     public boolean existe_documento(TipoDocumento tipoDocumento, long numeroDocumento) {
-        String query = "SELECT COUNT(h) FROM Huesped h WHERE h.tipoDocumento = :tipo AND h.numDocumento = :num";
+        String query = "SELECT COUNT(h) FROM Huesped h WHERE h.tipo_documento = :tipo AND h.num_documento = :num";
         Long count = em.createQuery(query, Long.class)
                        .setParameter("tipo", tipoDocumento)
                        .setParameter("num", numeroDocumento)

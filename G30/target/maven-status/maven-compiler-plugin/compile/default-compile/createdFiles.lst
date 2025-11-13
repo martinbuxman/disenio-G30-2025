@@ -1,7 +1,6 @@
 tp\g30\clases\Nota_De_Credito.class
 tp\g30\interfaces\FacturaDAO.class
 tp\g30\interfaces\Nota_De_CreditoDAO.class
-tp\g30\controller\PingController.class
 tp\g30\interfaces\HabitacionDAO.class
 tp\g30\interfaces\HuespedDAO.class
 tp\g30\clases\Reserva.class

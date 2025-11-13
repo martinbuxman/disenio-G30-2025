@@ -31,7 +31,9 @@ public class Huesped extends Persona{
         this.email = email;
         this.ocupacion = ocupacion;
     }
-
+    public Huesped() {
+        super();
+    }
     @Override
     public String toString() {
         return this.getApellido() + ", " + this.getNombre();

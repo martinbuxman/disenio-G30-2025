@@ -34,6 +34,7 @@ public class Gestor_Usuario{
     private HuespedDaoArchivos huespedDao;
     private UsuarioDaoArchivos usuarioDao;
     private ReservaDaoArchivos reservaDao;
+    @Autowired
     private HuespedDaoDB huespedDaoDB;
 
     private final Scanner scanner = new Scanner(System.in);
@@ -466,11 +467,12 @@ public class Gestor_Usuario{
         HuespedDTO nuevoHuesped = new HuespedDTO(telefono, email, ocupacion, apellido, nombre, tipoDocumento, Integer.parseInt(numeroDocumento), cuit, fechaNacimiento, new Direccion(calle, numero, departamento, piso, codigoPostal, localidad, provincia, pais), nacionalidad);
         return nuevoHuesped;
     }
-        public Huesped dar_alta_huesped(Huesped huesped) {
+    public Huesped dar_alta_huesped(Huesped huesped) {
         if (huespedDaoDB.existe_documento(huesped.getTipoDocumento(), huesped.getNumDocumento())) {
             throw new RuntimeException("El documento ya existe");
         }
         huespedDaoDB.guardarHuesped(huesped);
+        
         return huesped;
     }
     public void dar_alta_huesped(){
