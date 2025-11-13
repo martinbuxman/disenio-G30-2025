@@ -38,6 +38,8 @@ public class PersonaDTO {
         this.direccion = direccion;
         this.nacionalidad = nacionalidad;
     }
+    public PersonaDTO() {
+    }
     public String getApellido() {
         return apellido;
     }

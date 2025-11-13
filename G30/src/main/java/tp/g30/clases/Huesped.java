@@ -39,7 +39,7 @@ public class Huesped extends Persona{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CondicionIVA condicionIVA = CondicionIVA.CONSUMIDOR_FINAL; // Valor por defecto
+    private CondicionIVA condicionIVA; 
 
     public Huesped(String telefono, String email, String ocupacion, CondicionIVA condicionIVA,
                    String apellido, String nombre, TipoDocumento tipo_documento, int num_documento,
@@ -48,11 +48,9 @@ public class Huesped extends Persona{
         this.telefono = telefono;
         this.email = email;
         this.ocupacion = ocupacion;
-        this.condicionIVA = (condicionIVA != null) ? condicionIVA : CondicionIVA.CONSUMIDOR_FINAL;
+        this.condicionIVA = condicionIVA;
     }
     public Huesped() {
-        super();
-         this.condicionIVA = CondicionIVA.CONSUMIDOR_FINAL;
     }
     @Override
     public String toString() {
@@ -83,6 +81,6 @@ public class Huesped extends Persona{
         this.ocupacion = ocupacion;
     }
     public void setCondicionIVA(CondicionIVA condicionIVA) {
-        this.condicionIVA = (condicionIVA != null) ? condicionIVA : CondicionIVA.CONSUMIDOR_FINAL;
+        this.condicionIVA = condicionIVA;
     }
 }

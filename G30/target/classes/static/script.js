@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(formHuesped);
 
         // Convertir a JSON anidado para direccion
+        const cuitValue = formData.get('cuit');
         const data = {
             nombre: formData.get('nombre'),
             apellido: formData.get('apellido'),
             tipo_documento: formData.get('tipo_documento'), // Se envía como string, JacksonJSON lo convertirá
             num_documento: parseInt(formData.get('num_documento')),
-            cuit: parseInt(formData.get('cuit')),
+            cuit: cuitValue && cuitValue.trim() !== '' ? parseInt(cuitValue) : null,
             fecha_nacimiento: formData.get('fecha_nacimiento'), // Formato YYYY-MM-DD
             direccion: {
                 calle: formData.get('direccion.calle'),
@@ -27,9 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
             nacionalidad: formData.get('nacionalidad'),
             telefono: formData.get('telefono'),
             email: formData.get('email'),
-            ocupacion: formData.get('ocupacion')
-        };
-
+            ocupacion: formData.get('ocupacion'),
+            condicionIVA: formData.get('condicionIVA')
+        }
+        
+        // Debug logs removed
+        
         fetch('/api/huespedes/alta', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
