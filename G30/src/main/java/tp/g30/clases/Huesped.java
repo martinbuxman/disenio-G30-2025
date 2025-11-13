@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import tp.g30.enums.TipoDocumento;
 
+import jakarta.validation.constraints.*;
+
 /**
  *
  * @author Cesar
@@ -21,8 +23,12 @@ public class Huesped extends Persona{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Pattern(regexp = "^[0-9\\-\\s]+$", message = "El teléfono solo puede contener números, espacios y guiones")
+    @NotBlank(message = "El teléfono es obligatorio")
     private String telefono;
+    @Email(message = "Formato de correo electrónico inválido")
     private String email;
+    @NotBlank(message = "La ocupación es obligatoria")
     private String ocupacion;
 
     public Huesped(String telefono, String email, String ocupacion, String apellido, String nombre, TipoDocumento tipo_documento, int num_documento, int cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {

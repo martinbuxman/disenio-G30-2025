@@ -7,6 +7,9 @@ import tp.g30.gestores.Gestor_Usuario;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+
 @RestController
 @RequestMapping("/api/huespedes")
 public class HuespedController {
@@ -16,8 +19,17 @@ public class HuespedController {
         this.gestorHuesped = gestorHuesped;
     }
 
-    @PostMapping("/alta")
-    public Huesped altaHuesped(@RequestBody Huesped huesped) {
-        return gestorHuesped.dar_alta_huesped(huesped);
+@PostMapping("/alta")
+public ResponseEntity<?> altaHuesped(@Valid @RequestBody Huesped huesped) {
+    try {
+        Huesped nuevo = gestorHuesped.dar_alta_huesped(huesped);
+        return ResponseEntity.ok(nuevo);
+    } catch (IllegalStateException e) {
+        // Duplicado u otro error de negocio
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+        // Cualquier otro error inesperado
+        return ResponseEntity.internalServerError().body("Error al registrar el huésped: " + e.getMessage());
     }
+}
 }
