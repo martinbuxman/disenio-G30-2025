@@ -12,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import tp.g30.enums.TipoDocumento;
-
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.*;
 import tp.g30.enums.CondicionIVA;
 import jakarta.persistence.EnumType;

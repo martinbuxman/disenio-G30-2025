@@ -9,7 +9,7 @@ public class ViewController {
 
     @GetMapping("/")
     public String mostrarPaginaInicio(Model model) {
-        model.addAttribute("titulo", "Hotel Premier - G30");
-        return "index"; // Devuelve index.html
+        model.addAttribute("titulo", "Hotel Premier");
+        return "home";
     }
 }

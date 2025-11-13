@@ -142,72 +142,8 @@ public class HuespedDaoArchivos implements HuespedDAO{
         return existe;
     }
     
-    public List<Huesped> buscar_huespedes(HuespedDTO huesped){
-        String archivo = "src/main/java/tp/desarrollo/db/huespedes.csv";
-
-        String linea;
-        List<Huesped> resultado = new ArrayList<>();
-        //Lógica para buscar huéspedes en el archivo CSV
-        //System.out.println("Directorio actual: " + System.getProperty("user.dir"));
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            linea = br.readLine(); // salta el encabezado
-            while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(",");
-                // Comparar los datos con los del objeto huesped
-                    String apellido = datos[3];
-                    String nombre = datos[4];
-                    String tipoDoc = datos[5];
-                    int numDoc = Integer.parseInt(datos[6]);
-                    boolean coincide = true;
-
-                    if (huesped.getNombre() != null && !huesped.getNombre().isBlank()) {
-                        coincide &= huesped.getNombre().equalsIgnoreCase(nombre);
-                    }
-                    if (huesped.getApellido() != null && !huesped.getApellido().isBlank()) {
-                        coincide &= huesped.getApellido().equalsIgnoreCase(apellido);
-                    }
-                    if (huesped.getTipo_documento() != null) {
-                        coincide &= huesped.getTipo_documento().toString().equalsIgnoreCase(tipoDoc);
-                    }
-                    if (huesped.getNum_documento() > 0) {
-                        coincide &= huesped.getNum_documento() == numDoc;
-                    }
-                    if(coincide){
-                        // Si coincide, crear un objeto Huesped y agregarlo a la lista de resultados
-                        TipoDocumento tipo = TipoDocumento.valueOf(datos[5].toUpperCase());
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        LocalDate fechaLocal = LocalDate.parse(datos[8], formatter);
-                        // Crear objeto Direccion
-                        tp.g30.clases.Direccion direccion = new tp.g30.clases.Direccion(
-                            datos[9],
-                            Integer.parseInt(datos[10]),
-                            datos[11],
-                            Integer.parseInt(datos[12]),
-                            Integer.parseInt(datos[13]),
-                            datos[14],
-                            datos[15],
-                            datos[16]
-                        );
-                        Huesped huespedEncontrado = new Huesped(datos[0], // telefono
-                            datos[1], // email
-                            datos[2], // ocupacion
-                            datos[3], // apellido
-                            datos[4], // nombre
-                            tipo, // tipo_documento
-                            Integer.parseInt(datos[6]), // num_documento
-                            Integer.parseInt(datos[7]), // cuit
-                            fechaLocal, // fecha_nacimiento
-                            direccion, // direccion
-                            datos[17] // nacionalidad
-                        );
-                        resultado.add(huespedEncontrado);
-                    }
-                }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        return resultado;
+    public List<Huesped> buscar_huespedes(HuespedDTO huesped){  
+        return null;
     }
     
     public void eliminar(Huesped huespedAEliminar) {
