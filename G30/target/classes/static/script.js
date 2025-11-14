@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalAdvertencia = new bootstrap.Modal(document.getElementById('modalAdvertencia'));
     const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
     const cuerpoModal = document.getElementById('cuerpoModalAdvertencia');
-    
+    const btnConfirmarSalida = document.getElementById('btnConfirmarSalida');
+    const modalConfirmarSalida = new bootstrap.Modal(document.getElementById('modalConfirmarSalida'));
+
     formHuesped.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -85,6 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             console.error('Error completo:', err);
         });
+    });
+    btnConfirmarSalida.addEventListener('click', function() {
+        modalConfirmarSalida.hide(); 
+        
+        window.location.href = '/';
     });
     btnConfirmarGuardado.addEventListener('click', function() {
     if (datosHuespedPendientes) {
