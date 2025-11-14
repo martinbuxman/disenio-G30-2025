@@ -18,7 +18,6 @@ tp\g30\enums\TipoDocumento.class
 tp\g30\clases\Factura.class
 tp\g30\clases\Cheque.class
 tp\g30\dao\HuespedDaoDB.class
-tp\g30\dao\ReservaDaoArchivos.class
 tp\g30\controller\AltaHuespedViewController.class
 tp\g30\clases\Estado_Habitacion.class
 tp\g30\enums\CondicionIVA.class
@@ -30,7 +29,6 @@ tp\g30\clases\Huesped.class
 tp\g30\clases\Persona.class
 tp\g30\gestores\Gestor_Usuario.class
 tp\g30\controller\ViewController.class
-tp\g30\dao\UsuarioDaoArchivos.class
 tp\g30\clases\NotBlank.class
 tp\g30\interfaces\Responsable_de_pagoDAO.class
 tp\g30\clases\Divisa.class
@@ -47,6 +45,5 @@ tp\g30\interfaces\EstadiaDAO.class
 tp\g30\interfaces\PersonaDAO.class
 tp\g30\excepciones\GlobalExceptionHandler.class
 tp\g30\interfaces\PagoDAO.class
-tp\g30\excepciones\HuespedConReservasExcepcion.class
 tp\g30\clases\Efectivo.class
 tp\g30\clases\Pago.class

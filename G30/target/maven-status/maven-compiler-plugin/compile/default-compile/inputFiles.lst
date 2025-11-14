@@ -22,15 +22,12 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\A
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\HuespedController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\ViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\HuespedDaoDB.java
-C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\ReservaDaoArchivos.java
-C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\UsuarioDaoArchivos.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\DireccionDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\HuespedDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\PersonaDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\CondicionIVA.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\TipoDocumento.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\GlobalExceptionHandler.java
-C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\HuespedConReservasExcepcion.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Estadia.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Factura.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Habitacion.java

@@ -1,13 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package tp.g30.dto;
 
 import java.time.LocalDate;
-import tp.g30.clases.Direccion;
 import tp.g30.enums.TipoDocumento;
-import jakarta.validation.Valid; // Para validar campos anidados
+import jakarta.validation.Valid; 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -26,29 +22,22 @@ public class PersonaDTO {
     @NotNull(message = "El Tipo de Documento es obligatorio.")
     private TipoDocumento tipo_documento;
     
-    // Usamos @NotNull para tipos primitivos long/int que se esperan como objetos
-    // Spring puede tener problemas mapeando 0L a null si se omite, pero @NotNull ayuda.
     @NotNull(message = "El número de documento es obligatorio.")
-    private Long num_documento; // Cambiar a Long para permitir @NotNull si es null desde JSON
+    private Long num_documento; 
 
-    // CUIL/CUIT no es obligatorio, por lo que no lleva @NotNull
-    private Long cuit; // Cambiar a Long
+    private Long cuit; 
     
     @NotNull(message = "La fecha de nacimiento es obligatoria.")
     @Past(message = "La fecha de nacimiento debe ser en el pasado.")
     private LocalDate fecha_nacimiento;
     
-    // **CLAVE:** Para que Spring valide los campos dentro de 'Direccion'
     @Valid 
     @NotNull(message = "La dirección es obligatoria.")
-    private DireccionDTO direccion; // Asume que la clase Direccion ya tiene sus propias anotaciones
+    private DireccionDTO direccion; 
     
     @NotBlank(message = "La nacionalidad es obligatoria.")
     private String nacionalidad;
 
-    // ... (restantes constructores, getters y setters sin cambios)
-    
-    // CLAVE: Cambia los tipos primitivos long a Long en los campos y setters
 
     public PersonaDTO(String apellido, String nombre, TipoDocumento tipo_documento, String num_documento) {
         this.apellido = apellido;
