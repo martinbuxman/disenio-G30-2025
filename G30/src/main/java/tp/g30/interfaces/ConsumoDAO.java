@@ -4,10 +4,7 @@
  */
 package tp.g30.interfaces;
 
-/**
- *
- * @author juanc
- */
+
 public interface ConsumoDAO {
     
 }
