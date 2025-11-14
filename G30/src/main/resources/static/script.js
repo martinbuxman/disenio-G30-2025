@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalHuespedGuardado = new bootstrap.Modal(document.getElementById('modalHuespedGuardado'));
     const cuerpoModalGuardadoExito = document.getElementById('cuerpoModalGuardadoExito');
     const btnSalirAHomedeExito = document.getElementById('btnSalirAHomedeExito');
+    const modalAdvertenciaElement = document.getElementById('modalAdvertencia');
+    const inputTipoDocumento = document.querySelector('[name="tipo_documento"]');
 
     formHuesped.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -130,7 +132,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
+    modalAdvertenciaElement.addEventListener('hidden.bs.modal', function () {
+        if (inputTipoDocumento) {
+            inputTipoDocumento.classList.add('is-invalid');
+            
+            // Desplazamiento
+            inputTipoDocumento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+    
     function limpiarErrores() {
         document.querySelectorAll('input, select').forEach(el => {
             el.classList.remove('is-invalid'); 
