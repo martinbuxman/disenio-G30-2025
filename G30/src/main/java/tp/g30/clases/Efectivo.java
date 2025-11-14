@@ -1,13 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tp.g30.clases;
 
-/**
- *
- * @author juanc
- */
+import jakarta.persistence.Entity;
+import lombok.Data;
+
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Entity
 public class Efectivo extends Pago {
-    
+	private double montoDePago;
 }

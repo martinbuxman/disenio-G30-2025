@@ -4,16 +4,15 @@
  */
 package tp.g30.clases;
 
-import java.time.LocalDate;
-import tp.g30.enums.TipoDocumento;
-/**
- *
- * @author juanc
- */
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Responsable_de_pago extends Persona {
-    
-    public Responsable_de_pago(String apellido, String nombre, TipoDocumento tipo_documento, int num_documento, int cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
-        super(apellido, nombre, tipo_documento, num_documento, cuit, fecha_nacimiento, direccion, nacionalidad);
-    }
+    private String razonSocial;
     
 }

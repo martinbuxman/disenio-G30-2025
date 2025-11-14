@@ -1,13 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tp.g30.clases;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Data;
 
-/**
- *
- * @author juanc
- */
+
+@Entity
+@Data
 public class Divisa {
-    
+    @Id
+    private String tipo;
+    private double cotizacion;
 }
