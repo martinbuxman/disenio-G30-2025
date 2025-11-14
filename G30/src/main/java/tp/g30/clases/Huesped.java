@@ -62,7 +62,7 @@ public class Huesped extends Persona{
         return  this.telefono;
     }
     public String getEmail(){
-        return  this.email;
+        return  this.email; 
     }
     public String getOcupacion(){
         return  this.ocupacion;

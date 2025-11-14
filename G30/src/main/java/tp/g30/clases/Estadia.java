@@ -26,12 +26,8 @@ public class Estadia {
     private Float valor_estadia;
 
     // Relación: Una estadía puede tener varios huéspedes.
-    @ManyToMany
-    @JoinTable(
-        name = "estadia_huesped",
-        joinColumns = @JoinColumn(name = "estadia_id"),
-        inverseJoinColumns = @JoinColumn(name = "huesped_id")
-    )
+    @OneToMany
+    @JoinColumn(name = "estadia_id")
     private List<Huesped> lista_huespedes = new ArrayList<>();
 
     // Relación: Una estadía puede tener varias facturas.
