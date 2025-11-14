@@ -50,18 +50,16 @@ public class DireccionDTO {
     }
     
     public DireccionDTO() {
-        // Aseguramos que los primitivos tengan un valor inicial
         this.numero = 0; 
         this.piso = 0; 
-        // Los Strings y Integer/Long obligatorios se mantienen nulos para que @NotBlank y @NotNull los atrapen.
     }
     
-    // Getters y Setters (Asegúrate de que tus setters para int/Integer usen el tipo correcto)
+    // Getters y Setters
 
-    // GETTERS (Sin cambios)
+    // GETTERS 
     public String getCalle() { return calle; }
     public int getNumero() { return numero; }
-    public Integer getCodigoPostal() { return codigoPostal; } // Importante que sea Integer
+    public Integer getCodigoPostal() { return codigoPostal; }
     public String getLocalidad() { return localidad; }
     public String getProvincia() { return provincia; }
     public String getPais() { return pais; }
@@ -71,15 +69,12 @@ public class DireccionDTO {
     // SETTERS
     public void setCalle(String calle) { this.calle = calle; }
     public void setNumero(int numero) { this.numero = numero; }
-    public void setCodigoPostal(Integer cp) { this.codigoPostal = cp; } // Importante que sea Integer
+    public void setCodigoPostal(Integer cp) { this.codigoPostal = cp; }
     public void setLocalidad(String localidad) { this.localidad = localidad; }
     public void setProvincia(String provincia) { this.provincia = provincia; }
     public void setPais(String pais) { this.pais = pais; }
-    
-    // Departamento: Si es un String opcional, lo dejamos sin validación estricta, solo se acepta si se envía.
+
     public void setDepartamento(String depa) { this.departamento = depa; }
-    
-    // Piso: Si el JSON no lo envía, Spring lo deserializa a 0 (porque es int primitivo).
-    // Si se envía, la validación @Min(0) se asegura que no sea negativo (aunque sea raro).
+
     public void setPiso(int piso) { this.piso = piso; }
 }

@@ -9,6 +9,7 @@ import tp.g30.clases.Huesped;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tp.g30.excepciones.DocumentoDuplicadoException;
 
 import tp.g30.dao.HuespedDaoDB;
 import tp.g30.dto.HuespedDTO;
@@ -31,9 +32,13 @@ public class Gestor_Usuario{
         this.huespedDaoDB = huespedDaoDB;
     }
  
-    public Huesped dar_alta_huesped(HuespedDTO huesped) {
-        if (huespedDaoDB.existe_documento(huesped.getTipoDocumento(), huesped.getNumDocumento())) {
-            throw new RuntimeException("El documento ya existe");
+    public Huesped dar_alta_huesped(HuespedDTO huesped, boolean forzarGuardado) { 
+        
+        if (!forzarGuardado && huespedDaoDB.existe_documento(huesped.getTipoDocumento(), huesped.getNumDocumento())) {
+            throw new DocumentoDuplicadoException(
+                "¡CUIDADO! El tipo y numero de documento ya existen en el sistema: " + huesped.getTipoDocumento() + 
+                ", " + huesped.getNumDocumento() + "."
+            );
         }
         Direccion nuevaDireccion = new Direccion(huesped.getDIRECCION().getCalle(),
                                                huesped.getDIRECCION().getNumero(),

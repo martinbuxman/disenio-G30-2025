@@ -1,21 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
     const formHuesped = document.getElementById('formAltaHuesped');
-
+    let datosHuespedPendientes = null; 
+    const modalAdvertencia = new bootstrap.Modal(document.getElementById('modalAdvertencia'));
+    const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
+    const cuerpoModal = document.getElementById('cuerpoModalAdvertencia');
+    
     formHuesped.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // 1. Limpiar todos los mensajes y estilos de error previos
         limpiarErrores(); 
         
         const formData = new FormData(formHuesped);
         
-        // Convertir a JSON anidado para direccion
         const cuitValue = formData.get('cuit');
         const data = {
             nombre: formData.get('nombre'),
             apellido: formData.get('apellido'),
             tipo_documento: formData.get('tipo_documento'),
-            // Asegurarse de que los números sean Long/Integer y no strings vacíos si son opcionales
             num_documento: parseInt(formData.get('num_documento')),
             cuit: cuitValue && cuitValue.trim() !== '' ? parseInt(cuitValue) : null,
             fecha_nacimiento: formData.get('fecha_nacimiento'),
@@ -43,32 +44,36 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(async resp => {
             if (resp.ok) {
-                return resp.json(); // Respuesta 200 OK
+                return resp.json();
             } else if (resp.status === 400) {
-                // Errores de validación
                 const errorData = await resp.json();
                 mostrarErroresEnPantalla(errorData);
                 throw new Error('Errores de validación encontrados.'); 
+            } else if (resp.status === 409) { 
+                const mensajeAdvertencia = await resp.text();
+                
+                datosHuespedPendientes = data; 
+                
+                cuerpoModal.textContent = mensajeAdvertencia;
+                modalAdvertencia.show();
+                
+                throw new Error('Conflicto de documento. Esperando confirmación.');
             } else {
-                // Errores del servidor (500) u otros
                 const text = await resp.text();
                 throw new Error(`Error HTTP ${resp.status}: ${text.substring(0, 100)}...`);
             }
-        })
+            })
         .then(json => {
-            // Lógica de éxito (200 OK)
             const mensajeGeneral = document.getElementById('mensajeHuesped');
             
             mensajeGeneral.innerHTML = `Huésped <strong>${json.nombre} ${json.apellido}</strong> dado de alta con éxito!`;
             
-            // Estilo de éxito (verde)
             mensajeGeneral.classList.remove('alert-danger');
             mensajeGeneral.classList.add('alert-success');
             
             formHuesped.reset();
         })
         .catch(err => {
-            // Lógica para capturar errores que NO son 400
             if (err.message !== 'Errores de validación encontrados.') {
                 const mensajeGeneral = document.getElementById('mensajeHuesped');
                 
@@ -81,19 +86,43 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error completo:', err);
         });
     });
+    btnConfirmarGuardado.addEventListener('click', function() {
+    if (datosHuespedPendientes) {
+        modalAdvertencia.hide();
+        
+        fetch('/api/huespedes/alta?forzar=true', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosHuespedPendientes)
+        })
+        .then(async resp => {
+            if (resp.ok) {
+                return resp.json();
+            }
+            throw new Error('Error al guardar el huésped después de la confirmación.');
+        })
+        .then(json => {
+            const mensajeGeneral = document.getElementById('mensajeHuesped');
+            mensajeGeneral.innerHTML = `Huésped <strong>${json.nombre} ${json.apellido}</strong> guardado, ignorando la advertencia de duplicado.`;
+            mensajeGeneral.classList.remove('alert-danger');
+            mensajeGeneral.classList.add('alert-success');
+            formHuesped.reset();
+            datosHuespedPendientes = null; 
+        })
+        .catch(err => {
+            const mensajeGeneral = document.getElementById('mensajeHuesped');
+            mensajeGeneral.innerHTML = '<strong>Error Crítico:</strong> ' + err.message;
+            mensajeGeneral.classList.add('alert-danger');
+            console.error('Error al reenviar:', err);
+        });
+    }
+});
 
-    // --------------------------------------------------------------------------------
-
-    /**
-     * Limpia los estilos de borde rojo de los inputs y el mensaje general.
-     */
     function limpiarErrores() {
-        // Limpia el borde rojo de todos los campos de formulario
         document.querySelectorAll('input, select').forEach(el => {
             el.classList.remove('is-invalid'); 
         });
         
-        // Limpia el contenedor de mensajes
         const mensajeGeneral = document.getElementById('mensajeHuesped');
         mensajeGeneral.textContent = '';
         mensajeGeneral.classList.remove('alert-danger', 'alert-success');
