@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cuerpoModal = document.getElementById('cuerpoModalAdvertencia');
     const btnConfirmarSalida = document.getElementById('btnConfirmarSalida');
     const modalConfirmarSalida = new bootstrap.Modal(document.getElementById('modalConfirmarSalida'));
+    const modalHuespedGuardado = new bootstrap.Modal(document.getElementById('modalHuespedGuardado'));
+    const cuerpoModalGuardadoExito = document.getElementById('cuerpoModalGuardadoExito');
+    const btnSalirAHomedeExito = document.getElementById('btnSalirAHomedeExito');
 
     formHuesped.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -66,14 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             })
         .then(json => {
-            const mensajeGeneral = document.getElementById('mensajeHuesped');
-            
-            mensajeGeneral.innerHTML = `Huésped <strong>${json.nombre} ${json.apellido}</strong> dado de alta con éxito!`;
-            
-            mensajeGeneral.classList.remove('alert-danger');
-            mensajeGeneral.classList.add('alert-success');
-            
             formHuesped.reset();
+            limpiarErrores(); 
+            
+            cuerpoModalGuardadoExito.innerHTML = `El huésped <strong>${json.nombre} ${json.apellido}</strong> ha sido cargado correctamente.`;
+            
+            modalHuespedGuardado.show();
         })
         .catch(err => {
             if (err.message !== 'Errores de validación encontrados.') {
@@ -87,6 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             console.error('Error completo:', err);
         });
+    });
+    btnSalirAHomedeExito.addEventListener('click', function() {
+    window.location.href = '/'; 
     });
     btnConfirmarSalida.addEventListener('click', function() {
         modalConfirmarSalida.hide(); 
