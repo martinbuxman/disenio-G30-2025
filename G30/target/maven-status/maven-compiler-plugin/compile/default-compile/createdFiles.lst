@@ -4,7 +4,6 @@ tp\g30\interfaces\Nota_De_CreditoDAO.class
 tp\g30\interfaces\HabitacionDAO.class
 tp\g30\interfaces\HuespedDAO.class
 tp\g30\clases\Reserva.class
-tp\g30\dao\HuespedDaoArchivos.class
 tp\g30\dto\HuespedDTO.class
 tp\g30\dto\PersonaDTO.class
 tp\g30\interfaces\DireccionDAO.class

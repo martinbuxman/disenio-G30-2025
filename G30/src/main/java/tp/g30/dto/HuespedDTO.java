@@ -32,7 +32,7 @@ public class HuespedDTO extends PersonaDTO {
     }
     public HuespedDTO(String telefono, String email, String ocupacion, CondicionIVA condicionIVA,
                       String apellido, String nombre, TipoDocumento tipo_documento, long num_documento,
-                      long cuit, LocalDate fecha_nacimiento, Direccion direccion,  String nacionalidad) {
+                      long cuit, LocalDate fecha_nacimiento, DireccionDTO direccion,  String nacionalidad) {
         super(apellido, nombre, tipo_documento, num_documento, cuit, fecha_nacimiento, direccion, nacionalidad);
         this.telefono = telefono;
         this.email = email;
@@ -41,7 +41,7 @@ public class HuespedDTO extends PersonaDTO {
     }
     public HuespedDTO(){
     }
-    public HuespedDTO(Huesped huesped){
+    public HuespedDTO(HuespedDTO huesped){
         super(huesped.getApellido(), huesped.getNombre(), huesped.getTipoDocumento(), huesped.getNumDocumento(),
               huesped.getCUIT(), huesped.getFechaNacimiento(), huesped.getDIRECCION(), huesped.getNacionalidad());
         this.telefono = huesped.getTelefono();
@@ -62,7 +62,7 @@ public class HuespedDTO extends PersonaDTO {
     public String getOcupacion(){
         return  this.ocupacion;
     }
-    public Direccion getDIRECCION(){
+    public DireccionDTO getDIRECCION(){
         return super.getDireccion();
     }
     public TipoDocumento getTipoDocumento(){
@@ -97,7 +97,7 @@ public class HuespedDTO extends PersonaDTO {
     public void setOcupacion(String ocupacion){
         this.ocupacion = ocupacion;
     }   
-    public void setDireccion(Direccion direccion){
+    public void setDireccion(DireccionDTO direccion){
         super.setDireccion(direccion);
     }
     public void setCondicionIVA(CondicionIVA condicionIVA){

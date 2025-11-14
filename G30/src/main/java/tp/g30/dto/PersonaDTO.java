@@ -41,7 +41,7 @@ public class PersonaDTO {
     // **CLAVE:** Para que Spring valide los campos dentro de 'Direccion'
     @Valid 
     @NotNull(message = "La dirección es obligatoria.")
-    private Direccion direccion; // Asume que la clase Direccion ya tiene sus propias anotaciones
+    private DireccionDTO direccion; // Asume que la clase Direccion ya tiene sus propias anotaciones
     
     @NotBlank(message = "La nacionalidad es obligatoria.")
     private String nacionalidad;
@@ -56,7 +56,7 @@ public class PersonaDTO {
         this.tipo_documento = tipo_documento;
         this.num_documento = Long.parseLong(num_documento);
     }
-    public PersonaDTO(String apellido, String nombre, TipoDocumento tipo_documento, long num_documento, long cuit, LocalDate fecha_nacimiento, Direccion direccion, String nacionalidad) {
+    public PersonaDTO(String apellido, String nombre, TipoDocumento tipo_documento, long num_documento, long cuit, LocalDate fecha_nacimiento, DireccionDTO direccion, String nacionalidad) {
         this.apellido = apellido;
         this.nombre = nombre;
         this.tipo_documento = tipo_documento;
@@ -86,7 +86,7 @@ public class PersonaDTO {
     public LocalDate getFecha_nacimiento() {
         return fecha_nacimiento;
     }
-    public Direccion getDireccion() {
+    public DireccionDTO getDireccion() {
         return direccion;
     }
     public String getNacionalidad() {
@@ -111,7 +111,7 @@ public class PersonaDTO {
     public void setFecha_nacimiento(LocalDate fecha) {
         this.fecha_nacimiento = fecha;
     }
-    public void setDireccion(Direccion direccion) {
+    public void setDireccion(DireccionDTO direccion) {
         this.direccion = direccion;
     }
     public void setNacionalidad(String nacionalidad) {

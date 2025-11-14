@@ -4,6 +4,7 @@
  */
 package tp.g30.gestores;
 
+import tp.g30.clases.Direccion;
 import tp.g30.clases.Huesped;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,19 @@ public class Gestor_Usuario{
         if (huespedDaoDB.existe_documento(huesped.getTipoDocumento(), huesped.getNumDocumento())) {
             throw new RuntimeException("El documento ya existe");
         }
+        Direccion nuevaDireccion = new Direccion(huesped.getDIRECCION().getCalle(),
+                                               huesped.getDIRECCION().getNumero(),
+                                               huesped.getDIRECCION().getDepartamento(),
+                                               huesped.getDIRECCION().getPiso(),
+                                               huesped.getDIRECCION().getCodigoPostal(),
+                                               huesped.getDIRECCION().getLocalidad(),
+                                               huesped.getDIRECCION().getProvincia(),
+                                               huesped.getDIRECCION().getPais());
+
         Huesped nuevoHuesped = new Huesped(huesped.getTelefono(), huesped.getEmail(), huesped.getOcupacion(), huesped.getCondicionIVA(),
                                          huesped.getApellido(), huesped.getNombre(), huesped.getTipoDocumento(),
                                          (int) huesped.getNum_documento(), (int) huesped.getCuit(), huesped.getFechaNacimiento(),
-                                         huesped.getDIRECCION(), huesped.getNacionalidad());
+                                         nuevaDireccion, huesped.getNacionalidad());
         huespedDaoDB.guardarHuesped(nuevoHuesped);
         
         return nuevoHuesped;
