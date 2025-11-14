@@ -37,10 +37,12 @@ tp\g30\interfaces\ReservaDAO.class
 tp\g30\TPDG30.class
 tp\g30\clases\Habitacion.class
 tp\g30\clases\Tarjeta_Credito.class
+tp\g30\excepciones\DocumentoDuplicadoException.class
 tp\g30\clases\Tarjeta_Debito.class
 tp\g30\gestores\Gestor_Estadia.class
 tp\g30\interfaces\ConsumoDAO.class
 tp\g30\clases\Servicio_Especial.class
+tp\g30\dto\DireccionDTO.class
 tp\g30\interfaces\EstadiaDAO.class
 tp\g30\interfaces\PersonaDAO.class
 tp\g30\excepciones\GlobalExceptionHandler.class
