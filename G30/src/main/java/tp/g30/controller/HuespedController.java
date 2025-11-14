@@ -32,10 +32,4 @@ public ResponseEntity<?> altaHuesped(@Valid @RequestBody HuespedDTO huespedDTO) 
         return ResponseEntity.internalServerError().body("Error al registrar el huésped: " + e.getMessage());
     }
 }
-
-    @PostMapping("/echo")
-    public ResponseEntity<String> echo(@RequestBody String body) {
-        // Endpoint temporal para inspeccionar el JSON recibido desde el cliente
-        return ResponseEntity.ok().header("Content-Type", "application/json").body(body);
-    }
 }

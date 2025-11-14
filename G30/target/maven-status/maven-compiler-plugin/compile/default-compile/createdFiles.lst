@@ -46,6 +46,7 @@ tp\g30\interfaces\ConsumoDAO.class
 tp\g30\clases\Servicio_Especial.class
 tp\g30\interfaces\EstadiaDAO.class
 tp\g30\interfaces\PersonaDAO.class
+tp\g30\excepciones\GlobalExceptionHandler.class
 tp\g30\interfaces\PagoDAO.class
 tp\g30\excepciones\HuespedConReservasExcepcion.class
 tp\g30\clases\Efectivo.class

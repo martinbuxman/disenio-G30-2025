@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package tp.g30.dto;
 
 import java.time.LocalDate;
@@ -9,18 +6,26 @@ import tp.g30.clases.Direccion;
 import tp.g30.clases.Huesped;
 import tp.g30.enums.CondicionIVA;
 import tp.g30.enums.TipoDocumento;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
- *
  * @author juanc
  */
-public class HuespedDTO extends PersonaDTO{
-    
+public class HuespedDTO extends PersonaDTO {
+
+    @NotBlank(message = "El teléfono no puede estar vacío.")
     private String telefono;
+
+    @NotBlank(message = "El email es obligatorio.")
+    @Email(message = "Formato de email inválido.")
     private String email;
+
+    @NotBlank(message = "La ocupación es obligatoria.")
     private String ocupacion;
+
     private CondicionIVA condicionIVA;
-    
     //Constructores
     public HuespedDTO(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento) {
         super(apellido, nombre, tipoDocumento, numeroDocumento);
