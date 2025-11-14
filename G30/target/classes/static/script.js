@@ -113,12 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Error al guardar el huésped después de la confirmación.');
         })
         .then(json => {
-            const mensajeGeneral = document.getElementById('mensajeHuesped');
-            mensajeGeneral.innerHTML = `Huésped <strong>${json.nombre} ${json.apellido}</strong> guardado, ignorando la advertencia de duplicado.`;
-            mensajeGeneral.classList.remove('alert-danger');
-            mensajeGeneral.classList.add('alert-success');
             formHuesped.reset();
-            datosHuespedPendientes = null; 
+            limpiarErrores(); 
+            
+            cuerpoModalGuardadoExito.innerHTML = `El huésped <strong>${json.nombre} ${json.apellido}</strong> ha sido cargado correctamente.`;
+            
+            modalHuespedGuardado.show();
+            
+            datosHuespedPendientes = null;
         })
         .catch(err => {
             const mensajeGeneral = document.getElementById('mensajeHuesped');
