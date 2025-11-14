@@ -26,6 +26,7 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\Direccio
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\HuespedDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\PersonaDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\CondicionIVA.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\Estado.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\TipoDocumento.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\DocumentoDuplicadoException.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\GlobalExceptionHandler.java
