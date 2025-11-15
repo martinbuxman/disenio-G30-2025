@@ -35,7 +35,7 @@ public class Persona {
     @JsonProperty("num_documento")
     private long num_documento;
     @JsonProperty("cuit")
-    private long cuit;
+    private long cuit = 0;
     @JsonProperty("fecha_nacimiento")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fecha_nacimiento;

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
             apellido: formData.get('apellido'),
             tipo_documento: formData.get('tipo_documento'),
             num_documento: parseInt(formData.get('num_documento')),
-            cuit: cuitValue && cuitValue.trim() !== '' ? parseInt(cuitValue) : null,
+            cuit: cuitValue && cuitValue.trim() !== '' ? parseInt(cuitValue) : 0,
             fecha_nacimiento: formData.get('fecha_nacimiento'),
             direccion: {
                 calle: formData.get('direccion.calle'),

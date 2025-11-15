@@ -7,6 +7,7 @@ tp\g30\clases\Reserva.class
 tp\g30\dto\HuespedDTO.class
 tp\g30\dto\PersonaDTO.class
 tp\g30\interfaces\DireccionDAO.class
+tp\g30\enums\Estado.class
 tp\g30\gestores\Gestor_Pago.class
 tp\g30\interfaces\DivisaDAO.class
 tp\g30\gestores\Gestor_Factura.class
