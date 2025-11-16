@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface HuespedDAO {
     void modificar_huesped(HuespedDTO huespedOriginal, HuespedDTO huespedModificado);
-    List<Huesped> buscar_huespedes(HuespedDTO huesped);
+    List<Huesped> buscarHuespedes(String nombre, String apellido, String tipoDocumento, String numDocumento);
     boolean existe_documento(TipoDocumento tipoDocumento, long numeroDocumento);
     void guardarHuesped(Huesped huesped);
 }

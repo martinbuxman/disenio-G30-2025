@@ -13,11 +13,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import tp.g30.enums.TipoDocumento;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.*;
 import tp.g30.enums.CondicionIVA;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-
 
 
 /**
@@ -25,6 +26,8 @@ import jakarta.persistence.Enumerated;
  * @author Cesar
  */
 @Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Huesped extends Persona{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

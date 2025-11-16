@@ -1,17 +1,47 @@
 document.addEventListener('DOMContentLoaded', function() {
     const formHuesped = document.getElementById('formAltaHuesped');
     let datosHuespedPendientes = null; 
-    const modalAdvertencia = new bootstrap.Modal(document.getElementById('modalAdvertencia'));
     const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
     const cuerpoModal = document.getElementById('cuerpoModalAdvertencia');
     const btnConfirmarSalida = document.getElementById('btnConfirmarSalida');
-    const modalConfirmarSalida = new bootstrap.Modal(document.getElementById('modalConfirmarSalida'));
-    const modalHuespedGuardado = new bootstrap.Modal(document.getElementById('modalHuespedGuardado'));
     const cuerpoModalGuardadoExito = document.getElementById('cuerpoModalGuardadoExito');
     const btnSalirAHomedeExito = document.getElementById('btnSalirAHomedeExito');
     const modalAdvertenciaElement = document.getElementById('modalAdvertencia');
+    const modalConfirmarSalidaElement = document.getElementById('modalConfirmarSalida');
+    const modalHuespedGuardadoElement = document.getElementById('modalHuespedGuardado');
     const inputTipoDocumento = document.querySelector('[name="tipo_documento"]');
+    const formSeleccion = document.getElementById('formSeleccion');
+    // --- 2. Inicialización SEGURA de Modales (SOLUCIÓN al TypeError) ---
+    // Solo inicializa el objeto Bootstrap Modal si el elemento HTML existe.
+    const modalAdvertencia = modalAdvertenciaElement 
+        ? new bootstrap.Modal(modalAdvertenciaElement) 
+        : null;
+        
+    const modalConfirmarSalida = modalConfirmarSalidaElement 
+        ? new bootstrap.Modal(modalConfirmarSalidaElement) 
+        : null;
+        
+    const modalHuespedGuardado = modalHuespedGuardadoElement 
+        ? new bootstrap.Modal(modalHuespedGuardadoElement) 
+        : null;
 
+if (formSeleccion) {
+        formSeleccion.addEventListener('submit', function(event) {
+        event.preventDefault(); // Detiene el envío por defecto del formulario
+
+         const selectedHuesped = document.querySelector('input[name="huespedIdSeleccionado"]:checked');
+
+        if (selectedHuesped) {
+            const huespedId = selectedHuesped.value;
+             console.log('✅ Huésped seleccionado (ID: ' + huespedId + '). Redirigiendo a / para iniciar reserva.');
+            window.location.href = '/'; // Se mantiene tu lógica actual de ir a /
+        } else {
+        console.log('➡️ Huésped NO seleccionado. Redirigiendo a /huespedes/alta');
+     window.location.href = '/huespedes/alta';
+    }
+    });
+}
+if(formHuesped){
     formHuesped.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -91,14 +121,20 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error completo:', err);
         });
     });
+}
+if(btnSalirAHomedeExito){
     btnSalirAHomedeExito.addEventListener('click', function() {
     window.location.href = '/'; 
     });
+}
+if(btnConfirmarSalida){
     btnConfirmarSalida.addEventListener('click', function() {
         modalConfirmarSalida.hide(); 
         
         window.location.href = '/';
     });
+}
+if(btnConfirmarGuardado){
     btnConfirmarGuardado.addEventListener('click', function() {
     if (datosHuespedPendientes) {
         modalAdvertencia.hide();
@@ -132,6 +168,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+}
+if(modalAdvertenciaElement){
     modalAdvertenciaElement.addEventListener('hidden.bs.modal', function () {
         if (inputTipoDocumento) {
             inputTipoDocumento.classList.add('is-invalid');
@@ -140,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             inputTipoDocumento.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
+}
     
     function limpiarErrores() {
         document.querySelectorAll('input, select').forEach(el => {

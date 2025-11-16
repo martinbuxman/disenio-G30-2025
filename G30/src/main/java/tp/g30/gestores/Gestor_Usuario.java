@@ -7,6 +7,8 @@ package tp.g30.gestores;
 import tp.g30.clases.Direccion;
 import tp.g30.clases.Huesped;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tp.g30.excepciones.DocumentoDuplicadoException;
@@ -56,5 +58,8 @@ public class Gestor_Usuario{
         huespedDaoDB.guardarHuesped(nuevoHuesped);
         
         return nuevoHuesped;
+    }
+    public List<Huesped> buscarHuespedes(String nombre, String apellido, String tipoDocumento, String numDocumento) {
+        return huespedDaoDB.buscarHuespedes(nombre, apellido, tipoDocumento, numDocumento);
     }
 }

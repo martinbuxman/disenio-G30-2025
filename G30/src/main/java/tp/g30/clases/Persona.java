@@ -17,12 +17,14 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import lombok.Data;
 import tp.g30.enums.TipoDocumento;
 /**
  *
  * @author Cesar
  */
 @Entity
+@Data
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Persona {
     @Id

@@ -13,13 +13,13 @@ tp\g30\interfaces\DivisaDAO.class
 tp\g30\gestores\Gestor_Factura.class
 tp\g30\clases\Tarjeta.class
 tp\g30\interfaces\Estado_HabitacionDAO.class
+tp\g30\controller\HuespedViewController.class
 tp\g30\clases\Direccion.class
 tp\g30\clases\Consumo.class
 tp\g30\enums\TipoDocumento.class
 tp\g30\clases\Factura.class
 tp\g30\clases\Cheque.class
 tp\g30\dao\HuespedDaoDB.class
-tp\g30\controller\AltaHuespedViewController.class
 tp\g30\clases\Estado_Habitacion.class
 tp\g30\enums\CondicionIVA.class
 tp\g30\gestores\Gestor_Reserva.class
