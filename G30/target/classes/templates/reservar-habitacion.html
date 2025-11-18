@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Habitación - Disponibilidad Invertida</title>
+    <!-- Incluir Bootstrap 5 CDN para los estilos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+        }
+        .card-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            border-radius: 1rem;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        /* --- Estilos para la Grilla de Ocupación (Invertida) --- */
+        #room-availability-section {
+            display: none; 
+        }
+        
+        .grid-wrapper {
+            /* Contenedor principal para manejar el scroll */
+            overflow-y: auto; /* Scroll vertical principal */
+            overflow-x: auto; /* Scroll horizontal si hay muchas habitaciones */
+            max-height: 70vh; /* Altura máxima para forzar el scroll vertical */
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background-color: #fff;
+        }
+
+        .occupancy-grid {
+            display: table; /* Usamos table para una estructura de filas/columnas clásica */
+            border-collapse: collapse;
+            min-width: 100%;
+        }
+        
+        /* Fila de Encabezado (Habitaciones) */
+        .grid-header-row {
+            display: table-row;
+            background-color: #f4f7f9;
+            /* Fija el encabezado en la parte superior */
+            position: sticky; 
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Fila de Datos (Fechas) */
+        .grid-data-row {
+            display: table-row;
+        }
+        
+        /* Celdas generales */
+        .grid-cell {
+            display: table-cell;
+            padding: 8px 10px;
+            text-align: center;
+            border: 1px solid #eee;
+            vertical-align: middle;
+            min-width: 60px; /* Ancho mínimo para las celdas de habitación */
+            font-size: 0.85rem;
+        }
+
+        /* Celda de Fecha (Columna Fija) */
+        .date-label-cell {
+            position: sticky; /* Fija la columna de fecha a la izquierda */
+            left: 0;
+            z-index: 5;
+            background-color: #e9ecef;
+            font-weight: 600;
+            text-align: left;
+            border-right: 2px solid #dee2e6;
+            min-width: 120px;
+        }
+
+        /* Celda de Título de Habitación (Esquina Superior Izquierda) */
+        .top-left-corner {
+            position: sticky; 
+            left: 0;
+            top: 0;
+            z-index: 15; /* Mayor z-index para que cubra todo */
+            background-color: #ced4da;
+            font-weight: bold;
+            text-align: center;
+            border-right: 2px solid #dee2e6;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        /* Celdas de Disponibilidad (Los "cuadritos") */
+        .availability-cell {
+            height: 40px;
+            width: 60px;
+            line-height: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .availability-cell:hover {
+            opacity: 0.8;
+        }
+
+        /* --- COLORES DE ESTADO SOLICITADOS --- */
+        .status-libre { background-color: #28a745; } /* Verde: Libre */
+        .status-ocupada { background-color: #dc3545; } /* Rojo: Ocupada */
+        .status-reservada { background-color: #ffc107; color: #343a40; } /* Amarillo: Reservada (texto oscuro) */
+        .status-fuera_servicio { background-color: #343a40; } /* Negro: Fuera de Servicio */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card card-container">
+            <div class="card-body p-4 p-md-5">
+                <h1 class="card-title text-center mb-4 text-primary">Reserva de Habitación</h1>
+
+                <!-- FORMULARIO DE SELECCIÓN DE FECHAS -->
+                <div id="date-selection-form">
+                    <h2 class="h5 mb-3">1. Rango de Fechas</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="fechaDesde" class="form-label">Fecha Desde</label>
+                            <input type="date" class="form-control rounded-pill" id="fechaDesde" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaHasta" class="form-label">Fecha Hasta</label>
+                            <input type="date" class="form-control rounded-pill" id="fechaHasta" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <!-- Botón Cancelar - Dirige al home -->
+                        <a href="/" class="btn btn-cancel text-white rounded-pill px-4">
+                            Cancelar
+                        </a>
+                        
+                        <!-- Botón Siguiente - Llama a la función JS -->
+                        <button type="button" class="btn btn-primary rounded-pill px-4" onclick="showRoomAvailability()">
+                            Siguiente
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MENSAJES DE ERROR/INFO -->
+                <div id="message-container" class="mt-3">
+                    <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+                    <p id="date-summary" class="text-muted small mt-2"></p>
+                </div>
+
+
+                <!-- SECCIÓN DE GRILLA DE DISPONIBILIDAD (Inicialmente oculta) -->
+                <div id="room-availability-section" class="mt-5">
+                    <h2 class="h5 mb-3 text-secondary">2. Seleccionar Disponibilidad</h2>
+                    
+                    <div class="grid-wrapper">
+                        <div id="availability-timeline" class="occupancy-grid">
+                            <!-- Contenido de la grilla generado por JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-success rounded-pill px-5">
+                            Confirmar Reserva
+                        </button>
+                    </div>
+
+                    <div class="mt-3 small text-center">
+                        <span class="badge status-libre">Libre</span>
+                        <span class="badge status-ocupada">Ocupada</span>
+                        <span class="badge status-reservada">Reservada</span>
+                        <span class="badge status-fuera_servicio">F. Servicio</span>
+                    </div>
+
+                </div>
+                <!-- Fin room-availability-section -->
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data para simular la lista de habitaciones disponibles en el hotel
+        const ROOMS = [
+            { id: 101, name: '101' },
+            { id: 102, name: '102' },
+            { id: 201, name: '201' },
+            { id: 202, name: '202' },
+            { id: 301, name: '301' },
+            { id: 302, name: '302' },
+            { id: 401, name: '401' },
+        ];
+
+        // Definiciones de colores y etiquetas
+        const STATUS_MAPPING = {
+            'LIBRE': { class: 'status-libre', label: 'L' },
+            'OCUPADA': { class: 'status-ocupada', label: 'O' },
+            'RESERVADA': { class: 'status-reservada', label: 'R' },
+            'FUERA_SERVICIO': { class: 'status-fuera_servicio', label: 'F' }
+        };
+
+        // Función para generar un estado aleatorio (para la demostración)
+        function getRandomStatus() {
+            const statuses = ['LIBRE', 'OCUPADA', 'RESERVADA', 'FUERA_SERVICIO'];
+            // Asignamos pesos para que haya más disponibilidad (LIBRE)
+            const weightedStatuses = [...statuses, 'LIBRE', 'LIBRE', 'LIBRE', 'RESERVADA']; 
+            const randomIndex = Math.floor(Math.random() * weightedStatuses.length);
+            return weightedStatuses[randomIndex];
+        }
+
+        // Función para obtener las fechas en el rango (incluyendo inicio y fin)
+        function getDatesInRange(startDate, endDate) {
+            const dates = [];
+            let currentDate = new Date(startDate);
+            // Clonamos la fecha de fin y ajustamos para que el bucle incluya el día final
+            const end = new Date(endDate);
+            end.setDate(end.getDate() + 1);
+
+            while (currentDate < end) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return dates;
+        }
+
+        // Función para formatear las fechas para la columna izquierda
+        function formatDateLabel(date) {
+            const dayName = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'][date.getDay()];
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            return `${dayName}, ${day}/${month}`;
+        }
+        
+        /**
+         * Función principal que valida las fechas y genera la grilla de disponibilidad.
+         */
+        function showRoomAvailability() {
+            const fechaDesdeInput = document.getElementById('fechaDesde');
+            const fechaHastaInput = document.getElementById('fechaHasta');
+            const errorMessage = document.getElementById('error-message');
+            const dateSummary = document.getElementById('date-summary');
+            const availabilitySection = document.getElementById('room-availability-section');
+
+            const fechaDesde = new Date(fechaDesdeInput.value + 'T00:00:00');
+            const fechaHasta = new Date(fechaHastaInput.value + 'T00:00:00');
+
+            // 1. Validaciones
+            if (!fechaDesdeInput.value || !fechaHastaInput.value || isNaN(fechaDesde) || isNaN(fechaHasta)) {
+                errorMessage.textContent = "Por favor, complete ambas fechas.";
+                errorMessage.classList.remove('d-none');
+                availabilitySection.style.display = 'none';
+                return;
+            }
+            if (fechaDesde >= fechaHasta) {
+                errorMessage.textContent = "La 'Fecha Desde' debe ser estrictamente anterior a la 'Fecha Hasta'.";
+                errorMessage.classList.remove('d-none');
+                availabilitySection.style.display = 'none';
+                return;
+            }
+
+            // Si la validación es exitosa
+            errorMessage.classList.add('d-none');
+            availabilitySection.style.display = 'block';
+            
+            // 2. Generar el rango de fechas
+            const dates = getDatesInRange(fechaDesde, fechaHasta);
+            
+            // 3. Actualizar resumen de fechas
+            dateSummary.innerHTML = `Período: <strong>${fechaDesdeInput.value}</strong> al <strong>${fechaHastaInput.value}</strong> (${dates.length} días)`;
+
+            // 4. Generar y dibujar la grilla
+            generateAvailabilityGrid(dates, ROOMS);
+        }
+
+        /**
+         * Dibuja la grilla de disponibilidad en el DOM (Ejes Invertidos).
+         */
+        function generateAvailabilityGrid(dates, rooms) {
+            const occupancyGrid = document.getElementById('availability-timeline');
+            occupancyGrid.innerHTML = '';
+            
+            // --- A. Generar la Fila de Cabecera (Habitaciones) ---
+            const headerRow = document.createElement('div');
+            headerRow.classList.add('grid-header-row');
+            
+            // Celda de esquina superior izquierda (vacía o título)
+            const cornerCell = document.createElement('div');
+            cornerCell.classList.add('grid-cell', 'top-left-corner');
+            cornerCell.textContent = 'Fecha \\ Hab.';
+            headerRow.appendChild(cornerCell);
+
+            // Celdas de Habitaciones
+            rooms.forEach(room => {
+                const roomCell = document.createElement('div');
+                roomCell.classList.add('grid-cell');
+                roomCell.textContent = room.name;
+                headerRow.appendChild(roomCell);
+            });
+
+            occupancyGrid.appendChild(headerRow);
+
+
+            // --- B. Generar Filas de Datos (Fechas) ---
+            dates.forEach(date => {
+                const dataRow = document.createElement('div');
+                dataRow.classList.add('grid-data-row');
+                
+                // Etiqueta de la Fecha (Columna Fija)
+                const dateLabelCell = document.createElement('div');
+                dateLabelCell.classList.add('grid-cell', 'date-label-cell');
+                dateLabelCell.textContent = formatDateLabel(date);
+                dataRow.appendChild(dateLabelCell);
+
+                // Celdas de disponibilidad para todas las habitaciones en esta fecha
+                rooms.forEach(room => {
+                    const statusKey = getRandomStatus(); // Mock status
+                    const status = STATUS_MAPPING[statusKey];
+
+                    const cell = document.createElement('div');
+                    cell.classList.add('grid-cell', 'availability-cell', status.class);
+                    cell.setAttribute('title', `Habitación ${room.name} - ${statusKey} el ${date.toISOString().substring(0, 10)}`);
+                    cell.innerHTML = status.label; // Muestra la abreviatura del estado
+                    
+                    // Agregar evento de clic (para una futura selección)
+                    cell.onclick = () => {
+                        handleCellClick(room.id, date.toISOString().substring(0, 10), statusKey);
+                    };
+
+                    dataRow.appendChild(cell);
+                });
+
+                occupancyGrid.appendChild(dataRow);
+            });
+        }
+        
+        // Función de ejemplo para manejar la selección de celdas
+        function handleCellClick(roomId, date, status) {
+            console.log(`Seleccionada Habitación ${roomId} el día ${date}. Estado actual: ${status}`);
+            // Aquí se implementaría la lógica para iniciar o modificar una reserva.
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
