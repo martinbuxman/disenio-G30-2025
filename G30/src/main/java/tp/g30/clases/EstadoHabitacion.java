@@ -11,7 +11,7 @@ import tp.g30.enums.Estado;
 
 @Entity
 @Data
-public class Estado_Habitacion {
+public class EstadoHabitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

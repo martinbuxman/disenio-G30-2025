@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import tp.g30.excepciones.DocumentoDuplicadoException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 
 @RestController
 @RequestMapping("/api/huespedes")

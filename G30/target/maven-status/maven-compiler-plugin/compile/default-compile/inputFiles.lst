@@ -4,7 +4,7 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Direc
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Divisa.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Efectivo.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Estadia.java
-C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Estado_Habitacion.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\EstadoHabitacion.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Factura.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Habitacion.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Huesped.java
@@ -18,12 +18,16 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Servi
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta_Credito.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\clases\Tarjeta_Debito.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\HabitacionController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\HuespedController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\HuespedViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\ReservaViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\controller\ViewController.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\HabitacionDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dao\HuespedDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\DireccionDTO.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\EstadoHabitacionDTO.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\HabitacionDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\HuespedDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\dto\PersonaDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\CondicionIVA.java
@@ -31,6 +35,7 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\Estado
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\enums\TipoDocumento.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\DocumentoDuplicadoException.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\excepciones\GlobalExceptionHandler.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Estado_Habitacion.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Estadia.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Factura.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\G30\src\main\java\tp\g30\gestores\Gestor_Habitacion.java

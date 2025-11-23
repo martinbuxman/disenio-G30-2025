@@ -25,7 +25,7 @@ public class Habitacion {
 
     @OneToMany
     @JoinColumn(name = "habitacion_id")
-    private List<Estado_Habitacion> historiaEstados;
+    private List<EstadoHabitacion> historiaEstados;
 
     @ManyToMany(mappedBy = "listaHabitaciones")
     private List<Reserva> reservas;
