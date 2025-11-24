@@ -2,8 +2,6 @@ const modalAdvertenciaElement = document.getElementById('modalAdvertencia');
 const modalConfirmarSalidaElement = document.getElementById('modalConfirmarSalida');
 const modalHuespedGuardadoElement = document.getElementById('modalHuespedGuardado');
 
-// Inicialización de Modales de Bootstrap
-// Se usa un chequeo ternario para evitar errores si el modal no existe en la página actual
 const modalAdvertencia = modalAdvertenciaElement 
     ? new bootstrap.Modal(modalAdvertenciaElement) 
     : null;
@@ -16,18 +14,13 @@ const modalHuespedGuardado = modalHuespedGuardadoElement
     ? new bootstrap.Modal(modalHuespedGuardadoElement) 
     : null;
 
-// Variables globales para la lógica del huésped
 let datosHuespedPendientes = null; 
 const STATUS_MAPPING = {
     'LIBRE': { class: 'status-libre', label: 'L' },
     'OCUPADA': { class: 'status-ocupada', label: 'O' },
     'RESERVADA': { class: 'status-reservada', label: 'R' },
-    'FUERA_SERVICIO': { class: 'status-fuera_servicio', label: 'F' }
+    'FUERA_DE_SERVICIO': { class: 'status-fuera_servicio', label: 'F' }
 };
-
-// ======================================================
-// === Funciones de Utilidad (Fechas y Errores) =========
-// ======================================================
 
 function normalizeDate(date) {
     return date.toISOString().substring(0, 10);
@@ -72,7 +65,6 @@ function getRoomStatusForDate(room, dateStr) {
 function limpiarErrores() {
     document.querySelectorAll('input, select').forEach(el => {
         el.classList.remove('is-invalid'); 
-        // Limpiar el mensaje de feedback individual
         const feedbackEl = el.nextElementSibling;
         if (feedbackEl && feedbackEl.classList.contains('invalid-feedback')) {
              feedbackEl.textContent = '';
@@ -88,8 +80,6 @@ function limpiarErrores() {
 }
 
 /**
- * Muestra los errores de validación de la API en el recuadro general y resalta los campos.
- * CORREGIDO: Ahora usa .invalid-feedback para mostrar el error específico.
  * @param {Object} errores - Objeto JSON con {campo: mensaje, ...}
  */
 function mostrarErroresEnPantalla(errores) {
@@ -100,7 +90,7 @@ function mostrarErroresEnPantalla(errores) {
     let listaErroresHTML = '<strong>Errores encontrados:</strong>'; 
     
     if (mensajeGeneral) {
-        mensajeGeneral.classList.add('alert', 'alert-danger'); // Clases de Bootstrap
+        mensajeGeneral.classList.add('alert', 'alert-danger');
         listaErroresHTML += '<ul>';
     }
 
@@ -110,7 +100,6 @@ function mostrarErroresEnPantalla(errores) {
         if (errores.hasOwnProperty(campo)) {
             const mensaje = errores[campo];
             
-            // 1. Encontrar y marcar el input
             const inputElement = document.querySelector(`[name="${campo}"]`);
             if (inputElement) {
                 inputElement.classList.add('is-invalid'); 
@@ -119,18 +108,15 @@ function mostrarErroresEnPantalla(errores) {
                     primerCampoConError = inputElement;
                 }
 
-                // 2. Encontrar el contenedor de feedback y mostrar el mensaje detallado
                 const feedbackElement = inputElement.nextElementSibling;
                 if (feedbackElement && feedbackElement.classList.contains('invalid-feedback')) {
                     feedbackElement.textContent = mensaje;
                 } else {
-                    // Si no tiene .invalid-feedback, lo agregamos a la lista general
                     let nombreCampoAmigable = campo.replace('direccion.', '').replace('_', ' ');
                     nombreCampoAmigable = nombreCampoAmigable.charAt(0).toUpperCase() + nombreCampoAmigable.slice(1);
                     if (mensajeGeneral) listaErroresHTML += `<li>${nombreCampoAmigable}: ${mensaje}</li>`;
                 }
             } else {
-                // Si el campo no se encuentra (e.g., error global), lo agregamos a la lista general
                 let nombreCampoAmigable = campo.replace('direccion.', '').replace('_', ' ');
                 nombreCampoAmigable = nombreCampoAmigable.charAt(0).toUpperCase() + nombreCampoAmigable.slice(1);
                 if (mensajeGeneral) listaErroresHTML += `<li>${nombreCampoAmigable}: ${mensaje}</li>`;
@@ -142,7 +128,6 @@ function mostrarErroresEnPantalla(errores) {
         listaErroresHTML += '</ul>';
         mensajeGeneral.innerHTML = listaErroresHTML; 
         
-        // Desplazamiento al primer campo con error o al mensaje general
         if (primerCampoConError) {
              primerCampoConError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
@@ -151,10 +136,6 @@ function mostrarErroresEnPantalla(errores) {
     }
 }
 
-
-// ======================================================
-// === Lógica de Disponibilidad =========================
-// ======================================================
 
 async function fetchRoomAvailability(startDate, endDate) {
     const RELATIVE_PATH = '/api/habitaciones/disponibilidad';
@@ -186,7 +167,6 @@ function generateAvailabilityGrid(dates, rooms) {
         return;
     }
     
-    // Generación de la grilla (sin cambios, ya que era funcional)
     const headerRow = document.createElement('div');
     headerRow.classList.add('grid-header-row');
     
@@ -233,8 +213,6 @@ function generateAvailabilityGrid(dates, rooms) {
         occupancyGrid.appendChild(dataRow);
     });
 }
-
-// Función principal que valida las fechas y llama al backend de Spring Boot.
 window.showRoomAvailability = async function () {
     const fechaDesdeInput = document.getElementById('fechaDesde');
     const fechaHastaInput = document.getElementById('fechaHasta');
@@ -243,13 +221,11 @@ window.showRoomAvailability = async function () {
     const dateSummary = document.getElementById('date-summary');
     const availabilitySection = document.getElementById('room-availability-section');
 
-    // Limpiar mensajes y ocultar sección de grilla (usando clases Bootstrap)
     errorMessage.classList.add('d-none');
     errorMessage.classList.remove('alert-success', 'alert-danger', 'alert-info');
     loadingMessage.classList.add('d-none');
     availabilitySection.style.display = 'none';
 
-    // 1. Validaciones de Fecha
     if (!fechaDesdeInput.value || !fechaHastaInput.value) {
         errorMessage.textContent = "Por favor, complete ambas fechas.";
         errorMessage.classList.remove('d-none');
@@ -268,10 +244,8 @@ window.showRoomAvailability = async function () {
     }
     
     try {
-        // Mostrar mensaje de carga
         loadingMessage.classList.remove('d-none');
 
-        // 2. LLAMADA AL BACKEND REAL
         const dateFromStr = normalizeDate(fechaDesde);
         const dateToStr = normalizeDate(fechaHasta);
         
@@ -279,9 +253,13 @@ window.showRoomAvailability = async function () {
         
         loadingMessage.classList.add('d-none');
 
-        // 3. Procesar y Renderizar
         const dates = getDatesInRange(fechaDesde, fechaHasta);
+        const totalRooms = roomData.length;
+        const timelineContainer = document.getElementById('availability-timeline');
         
+
+        const roomColumnWidths = `repeat(${totalRooms}, 70px)`;
+        timelineContainer.style.gridTemplateColumns = `minmax(120px, 120px) ${roomColumnWidths}`;
         dateSummary.innerHTML = `Período: <strong>${dateFromStr}</strong> al <strong>${dateToStr}</strong> (${dates.length} días)`;
         availabilitySection.style.display = 'block';
 
@@ -289,33 +267,25 @@ window.showRoomAvailability = async function () {
 
     } catch (error) {
         loadingMessage.classList.add('d-none');
-        // Mostrar error detallado de conexión
         errorMessage.textContent = `Error de conexión/respuesta: ${error.message}. Asegúrese de que su servidor Spring Boot esté corriendo y el endpoint sea accesible.`;
         errorMessage.classList.remove('d-none');
         errorMessage.classList.add('alert-danger');
     }
 }
 
-/**
- * Maneja el clic en una celda de la grilla.
- * CORREGIDO: Usa clases de Bootstrap para el mensaje de éxito.
- */
+
 window.handleCellClick = function (roomNumber, date, status) {
     console.log(`Seleccionada Habitación ${roomNumber} el día ${date}. Estado actual: ${status}`);
     const message = `¡Celda seleccionada!\nHabitación: ${roomNumber}\nFecha: ${date}\nEstado: ${status}`;
     const errorMessageElement = document.getElementById('error-message');
     
     if (errorMessageElement) {
-        // Usa clases de Bootstrap para éxito
         errorMessageElement.textContent = message;
         errorMessageElement.classList.remove('d-none', 'alert-danger', 'alert-info');
         errorMessageElement.classList.add('alert', 'alert-success');
     }
 }
 
-// ======================================================
-// === Lógica del Formulario de Huésped =================
-// ======================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     const formHuesped = document.getElementById('formAltaHuesped');
@@ -327,9 +297,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputTipoDocumento = document.querySelector('[name="tipo_documento"]');
     const formSeleccion = document.getElementById('formSeleccion');
     
-    // --- Event Listeners para la Lógica de Huéspedes ---
-
-    // Lógica del formulario de Selección (si existe)
     if (formSeleccion) {
         formSeleccion.addEventListener('submit', function(event) {
             event.preventDefault(); 
@@ -346,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Lógica del formulario de Alta de Huésped (si existe)
     if(formHuesped){
         formHuesped.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -355,7 +321,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const formData = new FormData(formHuesped);
             
-            // Extracción y parseo de datos (manteniendo tu lógica)
             const cuitValue = formData.get('cuit');
             const data = {
                 nombre: formData.get('nombre'),
@@ -391,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return resp.json();
                 } else if (resp.status === 400) {
                     const errorData = await resp.json();
-                    mostrarErroresEnPantalla(errorData); // <-- Aquí se llama la función corregida
+                    mostrarErroresEnPantalla(errorData); 
                     throw new Error('Errores de validación encontrados.'); 
                 } else if (resp.status === 409) { 
                     const mensajeAdvertencia = await resp.text();
@@ -425,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     limpiarErrores();
                     mensajeGeneral.classList.remove('alert-success');
                     mensajeGeneral.classList.add('alert-danger');
-                    mensajeGeneral.classList.remove('d-none'); // Mostrar el alert
+                    mensajeGeneral.classList.remove('d-none'); 
                     
                     mensajeGeneral.innerHTML = '<strong>Error de Sistema:</strong> ' + err.message;
                 }
@@ -434,14 +399,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Lógica del botón de Salir del éxito
     if(btnSalirAHomedeExito){
         btnSalirAHomedeExito.addEventListener('click', function() {
             window.location.href = '/'; 
         });
     }
 
-    // Lógica del botón de Confirmar Salida
     if(btnConfirmarSalida){
         btnConfirmarSalida.addEventListener('click', function() {
             if (modalConfirmarSalida) modalConfirmarSalida.hide(); 
@@ -449,7 +412,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Lógica del botón de Confirmar Guardado (para el conflicto 409)
     if(btnConfirmarGuardado){
         btnConfirmarGuardado.addEventListener('click', function() {
         if (datosHuespedPendientes) {
@@ -483,21 +445,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 mensajeGeneral.innerHTML = '<strong>Error Crítico al reintentar:</strong> ' + err.message;
                 mensajeGeneral.classList.remove('alert-success');
                 mensajeGeneral.classList.add('alert-danger');
-                mensajeGeneral.classList.remove('d-none'); // Mostrar el alert
+                mensajeGeneral.classList.remove('d-none'); 
                 console.error('Error al reenviar:', err);
             });
         }
     });
     }
 
-    // Evento al cerrar la modal de Advertencia (para resaltar el campo)
     const modalAdvertenciaElement = document.getElementById('modalAdvertencia');
     if(modalAdvertenciaElement){
         modalAdvertenciaElement.addEventListener('hidden.bs.modal', function () {
             if (inputTipoDocumento) {
                 inputTipoDocumento.classList.add('is-invalid');
                 
-                // Desplazamiento
                 inputTipoDocumento.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
