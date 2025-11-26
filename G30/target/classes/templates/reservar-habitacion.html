@@ -86,7 +86,20 @@
     </style>
 </head>
 <body class="p-4 p-md-5">
-
+        <div class="container mt-5">
+        <h2 
+            id="titulo-hotel" 
+            class="
+                bg-white 
+                text-dark 
+                p-3 
+                rounded-0    
+                d-inline-block
+                shadow-lg" 
+            style="border: 5px solid #000000;" >
+            HOTEL PREMIER
+        </h2>
+        </div>
     <div class="container-xl mx-auto card shadow-lg rounded-3 p-4 p-md-5">
         <h1 class="h3 fw-bold text-primary mb-4 border-bottom pb-2">Reservar Habitacion</h1>
 
@@ -112,7 +125,7 @@
         <!-- Mensaje de Error / Loading -->
         <div id="error-message" class="alert mb-4 d-none" role="alert"></div>
         <div id="loading-message" class="alert alert-info mb-4 d-none" role="alert">
-            Cargando disponibilidad... (Conectando a su Backend REST)
+            Cargando disponibilidad...
         </div>
 
         <div id="room-availability-section" style="display: none;">
@@ -141,25 +154,23 @@
                 </div>
             </div>
             <div class="mt-4 pt-3 border-top text-center" id="action-buttons-container"> 
-                                <a 
+                <a 
                     th:href="@{/}" 
-                    class="btn btn-secondary btn-lg fw-semibold"  >
+                    class="btn btn-secondary btn-lg fw-semibold mx-2"> 
                     Cancelar
                 </a>
                 <button 
                     id="btnRechazarReserva" 
-                    class="btn btn-secondary btn-lg fw-semibold me-3" 
-                    onclick="handleRechazarReserva()"
+                    class="btn btn-danger btn-lg fw-semibold mx-2" onclick="handleRechazarReserva()"
                 >
-                    Rechazar/Limpiar
+                    Rechazar
                 </button>
                 <button 
                     id="btnAceptarReserva" 
-                    class="btn btn-success btn-lg fw-semibold" 
-                    onclick="handleAceptarReserva()"
+                    class="btn btn-success btn-lg fw-semibold mx-2" onclick="handleAceptarReserva()"
                     disabled 
                 >
-                    Aceptar y Cargar Huésped
+                    Aceptar
                 </button>
             </div>
     </div>

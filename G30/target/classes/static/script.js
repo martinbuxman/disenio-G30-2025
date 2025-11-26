@@ -430,10 +430,10 @@ function renderReservationCards() {
                 <div class="card shadow-sm border-start border-4 border-primary h-100">
                     <div class="card-body">
                         <h5 class="card-title fw-bold text-primary">
-                            Habitación ${reserva.habitacion}
+                            Habitación ${reserva.habitacion.numeroHabitacion}
                         </h5>
                         <h6 class="card-subtitle mb-3 text-muted">
-                            ${reserva.tipo}
+                            ${reserva.habitacion.tipo}
                         </h6>
                         
                         <div class="mb-2">
