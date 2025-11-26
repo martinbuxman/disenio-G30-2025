@@ -56,7 +56,7 @@ HuespedDTO huespedDTO = reservaDTO.getHuespedPrincipal();
             huespedNuevo.setNombre(huespedDTO.getNombre());
             huespedNuevo.setApellido(huespedDTO.getApellido());
             huespedNuevo.setTelefono(huespedDTO.getTelefono());
-            huespedNuevo.setNum_documento(huespedDTO.getNum_documento());
+            huespedNuevo.setNum_documento(0);
             huespedNuevo.setEmail(huespedDTO.getEmail());
             huespedNuevo.setFecha_nacimiento(huespedDTO.getFecha_nacimiento());
             huespedNuevo.setDireccion(direccion); 
@@ -64,7 +64,7 @@ HuespedDTO huespedDTO = reservaDTO.getHuespedPrincipal();
             huespedNuevo.setNacionalidad(huespedDTO.getNacionalidad());
             huespedNuevo.setCondicionIVA(huespedDTO.getCondicionIVA());
             huespedNuevo.setTipoDocumento(huespedDTO.getTipoDocumento());
-            huespedNuevo.setCUIT(huespedDTO.getCUIT());
+            huespedNuevo.setCUIT(0);
 
             huespedPrincipal = huespedDaoDB.saveHuesped(huespedNuevo);
         }

@@ -347,9 +347,6 @@ window.eliminarReserva = function(index) {
     renderReservationCards();
 };
 
-
-
-
 window.handleRechazarReserva = function() {
     console.log("Rechazo/Limpieza de todas las reservas pendientes.");
     for (let i = reservasConfirmadas.length - 1; i >= 0; i--) {

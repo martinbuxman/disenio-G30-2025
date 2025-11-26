@@ -13,7 +13,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
 
-        /* Estilos de la Grilla */
+        /* Estilos de la Grilla (REQUIERE CSS GRID) */
         #availability-timeline {
             display: grid;
             grid-template-columns: minmax(120px, 120px);
@@ -22,7 +22,24 @@
             background-color: white;
             min-width: 100%;
         }
+        .selection-start {
+            background-color: #0d6efd !important; /* Azul intenso */
+            color: white !important;
+            border: 2px solid #0a58ca;
+        }
+
+        .selection-valid {
+            /* Copiamos los estilos de .status-reservada */
+            background-color: #fff3cd !important; /* Amarillo de Warning */
+            color: #856404 !important; /* Color de texto asociado */
+            /* Mantenemos un borde interno sutil si quieres diferenciar la selección manual */
+            box-shadow: inset 0 0 0 1px rgba(133, 100, 4, 0.5); 
+        }
+        .status-ocupada, .status-reservada, .status-fuera_servicio {
+            cursor: not-allowed;
+        }
         .grid-header-row, .grid-data-row { display: contents; }
+
         .grid-cell {
             padding: 10px 5px;
             text-align: center;
@@ -30,27 +47,42 @@
             border-bottom: 1px solid #dee2e6;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.15s;
             white-space: nowrap;
         }
+        
+        /* Celda de la esquina superior izquierda */
         .top-left-corner {
-            position: sticky; left: 0; z-index: 10;
-            background-color: #0d6efd; color: white; font-weight: 600;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background-color: #0d6efd; /* Azul de Bootstrap Primary */
+            color: white;
+            font-weight: 600;
+            cursor: default;
         }
+
+        /* Columna fija de la fecha */
         .date-label-cell {
-            position: sticky; left: 0; z-index: 5;
-            background-color: #f8f9fa; font-weight: 500; text-align: left; padding-left: 15px;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background-color: #f8f9fa; /* Light Gray */
+            font-weight: 500;
+            text-align: left;
+            padding-left: 15px;
+            cursor: default;
         }
-        
-        /* Colores Base */
-        .status-libre { background-color: #d4edda; color: #155724; }
-        .status-reservada { background-color: #fff3cd; color: #856404; }
-        .status-ocupada { background-color: #f8d7da; color: #721c24; cursor: not-allowed; opacity: 0.6; }
-        .status-fuera_servicio { background-color: #e9ecef; color: #6c757d; cursor: not-allowed; }
-        
-        /* Efecto Selección */
-        .availability-cell:hover:not(.status-ocupada):not(.status-fuera_servicio) {
-            filter: brightness(0.95);
+
+        /* Estilos de Estado (Mapeo de Colores a Temas de Bootstrap) */
+        .status-libre { background-color: #d4edda; color: #155724; } /* Verde - Success */
+        .status-reservada { background-color: #fff3cd; color: #856404; } /* Amarillo - Warning */
+        .status-ocupada { background-color: #f8d7da; color: #721c24; } /* Rojo - Danger */
+        .status-fuera_servicio { background-color: #e9ecef; color: #6c757d; } /* Gris - Secondary */
+
+        .availability-cell:hover {
+            box-shadow: inset 0 0 0 2px #0d6efd; /* Borde Azul de Bootstrap */
+            z-index: 6;
         }
     </style>
 </head>
@@ -93,10 +125,10 @@
             </div>
 
             <div class="small text-muted text-center mb-4">
-                <span class="badge rounded-pill status-libre border border-dark text-dark me-2">L: LIBRE</span>
-                <span class="badge rounded-pill status-reservada border border-dark text-dark me-2">R: RESERVADA</span>
+                <span class="badge rounded-pill status-libre me-2">L: LIBRE</span>
+                <span class="badge rounded-pill status-reservada me-2">R: RESERVADA</span>
                 <span class="badge rounded-pill status-ocupada me-2">O: OCUPADA</span>
-                <span class="badge rounded-pill status-seleccionada border me-2">SELECCIONADA</span>
+                <span class="badge rounded-pill status-fuera_servicio">F: FUERA DE SERVICIO</span>
             </div>
 
             <div class="d-flex justify-content-center gap-3 border-top pt-4">
@@ -154,6 +186,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/script.js"></script>
+    <script src="/ocupar.js"></script>
 </body>
 </html>
