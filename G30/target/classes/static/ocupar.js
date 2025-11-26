@@ -364,10 +364,9 @@ if(btnVerificar) {
         const listaHtml = document.getElementById('listaSeleccionModal');
         if(listaHtml) {
             listaHtml.innerHTML = '';
-            Array.from(seleccionActual).sort().forEach(item => {
-                const [hab, fecha] = item.split('|');
+            seleccionActual.forEach((rango, hab) => {
                 const li = document.createElement('li');
-                li.textContent = `Habitacion ${hab} - Fecha ${fecha}`;
+                li.textContent = `Habitación ${hab}: ${rango.inicio} al ${rango.fin}`;
                 listaHtml.appendChild(li);
             });
         }
