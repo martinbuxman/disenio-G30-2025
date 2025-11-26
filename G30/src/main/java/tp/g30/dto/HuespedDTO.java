@@ -6,7 +6,8 @@ import tp.g30.enums.CondicionIVA;
 import tp.g30.enums.TipoDocumento;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-
+import lombok.Data;
+@Data
 public class HuespedDTO extends PersonaDTO {
 
     @NotBlank(message = "El teléfono no puede estar vacío.")
@@ -20,7 +21,6 @@ public class HuespedDTO extends PersonaDTO {
     private String ocupacion;
 
     private CondicionIVA condicionIVA;
-    //Constructores
     public HuespedDTO(String nombre, String apellido, TipoDocumento tipoDocumento, String numeroDocumento) {
         super(apellido, nombre, tipoDocumento, numeroDocumento);
     }
@@ -43,7 +43,7 @@ public class HuespedDTO extends PersonaDTO {
         this.ocupacion = huesped.getOcupacion();
     }
     
-    //GETTERS
+
     public String getTelefono(){
         return  this.telefono;
     }

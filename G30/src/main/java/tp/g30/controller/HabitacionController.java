@@ -22,10 +22,4 @@ public class HabitacionController {
         this.gestorHabitacion = gestorHabitacion;
     }
 
-    @GetMapping("/disponibilidad")
-    public List<HabitacionDTO> getDisponibilidad(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDesde,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaHasta) {
-        return gestorHabitacion.mostrarEstadoHabitaciones(fechaDesde, fechaHasta);
-    }
 }

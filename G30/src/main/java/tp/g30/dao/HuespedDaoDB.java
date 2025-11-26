@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import tp.g30.interfaces.HuespedDAO;
@@ -25,6 +26,12 @@ public class HuespedDaoDB implements HuespedDAO {
         em.persist(huesped);
         em.flush();
     }
+    @Transactional
+    public Huesped saveHuesped(Huesped huesped) {
+    em.persist(huesped);
+    em.flush(); 
+    return huesped;
+    }
     
     @Override
     public boolean existe_documento(TipoDocumento tipoDocumento, long numeroDocumento) {
@@ -38,12 +45,10 @@ public class HuespedDaoDB implements HuespedDAO {
 
     @Override
     public void modificar_huesped(HuespedDTO huespedOriginal, HuespedDTO huespedModificado) {
-        // Implementación pendiente
     }
 @Override
     public List<Huesped> buscarHuespedes(String nombre, String apellido, String tipoDocumento, String numDocumento) {
         
-        // 1. Base de la consulta JPQL: 'WHERE 1=1' es la clave para la flexibilidad.
         StringBuilder jpql = new StringBuilder("SELECT h FROM Huesped h WHERE 1=1"); 
 
         
@@ -63,10 +68,8 @@ public class HuespedDaoDB implements HuespedDAO {
             jpql.append(" AND h.num_documento = :numDocumento"); 
         } 
         
-        // 3. Crear la Query final
         TypedQuery<Huesped> query = em.createQuery(jpql.toString(), Huesped.class);
         
-        // 4. Asignar los parámetros solo si fueron incluidos en la JPQL
         if (StringUtils.hasText(apellido)) {
             query.setParameter("apellido", "%" + apellido + "%");
         }
@@ -86,8 +89,28 @@ public class HuespedDaoDB implements HuespedDAO {
             query.setParameter("numDocumento", numDocumento); 
         }
 
-        // 5. Ejecutar y devolver el resultado
         return query.getResultList();
+    }
+    public Huesped buscarHuespedPorDatos(String nombre, String apellido, String telefono) {
+        String jpql = "SELECT h FROM Huesped h WHERE h.nombre = :nombre AND h.apellido = :apellido AND h.telefono = :telefono";
+    
+        TypedQuery<Huesped> query = em.createQuery(jpql, Huesped.class);
+        
+
+        query.setParameter("nombre", nombre);
+        query.setParameter("apellido", apellido);
+        query.setParameter("telefono", telefono);
+
+        query.setMaxResults(1); 
+        
+        List<Huesped> results = query.getResultList();
+        
+        if (results.isEmpty()) {
+            return null;
+        } else {
+            return results.get(0);
+        }
+
     }
 
 }

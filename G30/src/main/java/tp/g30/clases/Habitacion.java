@@ -2,12 +2,12 @@ package tp.g30.clases;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
@@ -23,10 +23,8 @@ public class Habitacion {
     private int cantidadCamaD;
     private int cantidadCamaKS;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     @JoinColumn(name = "habitacion_id")
     private List<EstadoHabitacion> historiaEstados;
 
-    @ManyToMany(mappedBy = "listaHabitaciones")
-    private List<Reserva> reservas;
 }

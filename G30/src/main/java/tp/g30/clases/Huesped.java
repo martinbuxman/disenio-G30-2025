@@ -20,11 +20,6 @@ import tp.g30.enums.CondicionIVA;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
-
-/**
- *
- * @author Cesar
- */
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)

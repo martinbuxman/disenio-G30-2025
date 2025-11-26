@@ -21,7 +21,6 @@ tp\g30\enums\TipoDocumento.class
 tp\g30\clases\Factura.class
 tp\g30\clases\Cheque.class
 tp\g30\dao\HuespedDaoDB.class
-tp\g30\gestores\Estado_Habitacion.class
 tp\g30\enums\CondicionIVA.class
 tp\g30\gestores\Gestor_Reserva.class
 tp\g30\clases\Estadia.class

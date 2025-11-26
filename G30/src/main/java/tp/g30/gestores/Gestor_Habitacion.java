@@ -37,7 +37,7 @@ public class Gestor_Habitacion {
                 ))
                 .collect(Collectors.toList());
 
-            HabitacionDTO dto = new HabitacionDTO(hab.getNumeroHabitacion(), estadosDTO);
+            HabitacionDTO dto = new HabitacionDTO(hab.getNumeroHabitacion(), hab.getTipo(), estadosDTO);
             
             resultado.add(dto);
         }
@@ -52,5 +52,21 @@ public class Gestor_Habitacion {
         }
         return !estado.getFechaFin().isBefore(busquedaInicio) && 
                !estado.getFechaInicio().isAfter(busquedaFin);
+    }
+
+    public void crearEstadoHabitacion(Habitacion habitacion, LocalDate fecha_inicio, LocalDate fecha_fin) {
+        EstadoHabitacion nuevoEstado = new EstadoHabitacion();
+        nuevoEstado.setEstado(tp.g30.enums.Estado.RESERVADA); 
+        nuevoEstado.setFechaInicio(fecha_inicio);
+        nuevoEstado.setFechaFin(fecha_fin);
+
+        List<EstadoHabitacion> historiaEstados = habitacion.getHistoriaEstados();
+        if (historiaEstados == null) {
+            historiaEstados = new ArrayList<>();
+            habitacion.setHistoriaEstados(historiaEstados);
+        }
+        historiaEstados.add(nuevoEstado);
+
+        habitacionDao.actualizarHabitacion(habitacion);
     }
 }
