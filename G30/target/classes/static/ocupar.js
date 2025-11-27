@@ -9,6 +9,7 @@ let selectionState = {};
 let roomTypesMap = {}; 
 let reservasConfirmadas = [];
 
+
 let seleccionActual = new Map();
 
 const STATUS_MAPPING = {
@@ -417,60 +418,88 @@ function limpiarSeleccionVisualActual() {
 }
 
 function obtenerDatosDeOcupacion() {
-    // 1. Obtener datos del Responsable
+    if (seleccionActual.size === 0) {
+        alert("Error: No hay habitaciones seleccionadas.");
+        return null;
+    }
+    
+    const roomNumber = seleccionActual.keys().next().value;
+    const rango = seleccionActual.get(roomNumber);
+    
     const idResponsable = document.getElementById('idResponsableInput').value;
     const infoResponsable = document.getElementById('infoResponsable');
     
-    // Validar que se haya seleccionado un responsable
     if (!idResponsable || infoResponsable.classList.contains('d-none')) {
         alert("Por favor, seleccione un Huésped Responsable.");
         return null;
     }
+
+    let responsableDTO;
+
+    if (idResponsable) {
+        responsableDTO = { id: parseInt(idResponsable) }; 
+    } else {
+        responsableDTO = {
+            apellido: document.getElementById('apellidoResponsableDisplay').textContent || '',
+            nombre: document.getElementById('nombreResponsableDisplay').textContent || '',
+            tipoDocumento: document.getElementById('tipoDocumentoResponsable').value || 'DNI',
+            numeroDocumento: document.getElementById('numDocumentoResponsable').value || '',
+
+            telefono: document.getElementById('telResponsableInput') ? document.getElementById('telResponsableInput').value : 'N/A',
+            email: document.getElementById('emailResponsableInput') ? document.getElementById('emailResponsableInput').value : 'N/A@hotel.com',
+            ocupacion: document.getElementById('ocupacionResponsableInput') ? document.getElementById('ocupacionResponsableInput').value : 'Turista',
+            condicionIVA: document.getElementById('condicionIVAResponsableSelect') ? document.getElementById('condicionIVAResponsableSelect').value : 'CONSUMIDOR_FINAL', 
+            id: null
+        };
+    }
     
-    // 2. Obtener datos de Acompañantes
-    const acompanantes = [];
+    const huespedes = [responsableDTO]; 
     const filasAcomp = document.querySelectorAll('#tablaAcompanantes tbody tr');
     
     filasAcomp.forEach(row => {
-        // Buscamos el ID oculto que se agrega al seleccionar un huésped o lo dejamos vacío si no se seleccionó
         const idInput = row.querySelector('input[name="idAcomp"]');
+        const acompId = idInput ? idInput.value : null;
+
+        let acompData;
         
-        const acompData = {
-            id: idInput ? idInput.value : null, // Puede ser null si el acompañante es nuevo
-            tipoDocumento: row.querySelector('select[name="tipoDocumentoAcomp"]').value,
-            numDocumento: row.querySelector('input[name="numDocumentoAcomp"]').value,
-            apellido: row.querySelector('input[name="apellidoAcomp"]').value,
-            nombre: row.querySelector('input[name="nombreAcomp"]').value,
-        };
-        // Agregas el acompañante si tiene al menos apellido o DNI (puedes ajustar esta validación)
-        if (acompData.apellido.trim() || acompData.numDocumento.trim()) {
-            acompanantes.push(acompData);
+        if (acompId) {
+            acompData = { id: parseInt(acompId) }; 
+        } else {
+            acompData = {
+                apellido: row.querySelector('input[name="apellidoAcomp"]').value,
+                nombre: row.querySelector('input[name="nombreAcomp"]').value,
+                tipoDocumento: row.querySelector('select[name="tipoDocumentoAcomp"]').value,
+                numeroDocumento: row.querySelector('input[name="numDocumentoAcomp"]').value,
+                telefono: 'N/A', 
+                email: 'N/A@hotel.com',
+                ocupacion: 'Acompañante',
+                condicionIVA: 'CONSUMIDOR_FINAL', 
+                id: null,
+            };
+        }
+        
+        if ((acompData.apellido && acompData.apellido.trim()) || (acompData.numeroDocumento && acompData.numeroDocumento.trim())) {
+            huespedes.push(acompData);
         }
     });
-    
-    // 3. Obtener la selección de Habitaciones
-    const habitacionesSeleccionadas = [];
-    seleccionActual.forEach((rango, roomNumber) => {
-        habitacionesSeleccionadas.push({
-            numeroHabitacion: roomNumber,
-            fechaInicio: rango.inicio,
-            fechaFin: rango.fin,
-            tipoHabitacion: roomTypesMap[roomNumber], 
-        });
-    });
 
-    if (habitacionesSeleccionadas.length === 0) {
-        alert("Error: No hay habitaciones seleccionadas en la memoria temporal.");
-        return null;
-    }
-    
-    // Retornar la estructura final de la ocupación
-    return {
-        habitaciones: habitacionesSeleccionadas,
-        responsableId: idResponsable,
-        acompanantes: acompanantes, 
-        tipoOcupacion: 'CHECK_IN' 
+    const estadiaDTO = {
+        habitacion: {
+            numeroHabitacion: parseInt(roomNumber),
+            tipo: roomTypesMap[roomNumber] || 'Estándar', 
+            historiaEstados: [
+                {
+                    estado: 'OCUPADA', 
+                    fechaInicio: rango.inicio, 
+                    fechaFin: rango.fin
+                }
+            ]
+        },
+        huespedes: huespedes,
+        fecha_check_in: rango.inicio 
     };
+    
+    return estadiaDTO;
 }
 function showDecisionModal() {
     if (!modalDecision) return;
@@ -501,7 +530,7 @@ function limpiarGrillaYSeleccion() {
 
 
 // --- FUNCIÓN FINAL DE ENVÍO ---
-const API_URL_OCUPACION = '/api/v1/ocupacion/checkin'; 
+const API_URL_OCUPACION = '/api/ocupacion/checkin'; 
 
 async function enviarOcupacionesAlBackend(ocupaciones) {
     if (ocupaciones.length === 0) {
@@ -522,7 +551,7 @@ async function enviarOcupacionesAlBackend(ocupaciones) {
 
 
         if (response.ok) {
-            const result = await response.json(); 
+            const result = await response.text();
             
             console.log("✅ Éxito al guardar las ocupaciones. Respuesta del servidor:", result);
             

@@ -23,14 +23,17 @@ C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\H
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\HuespedController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\HuespedViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\OcupacionController.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\OcupacionViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\ReservaController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\ReservaViewController.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\controller\ViewController.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dao\EstadiaDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dao\HabitacionDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dao\HuespedDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dao\ReservaDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dao\ReservaHabitacionDaoDB.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dto\DireccionDTO.java
+C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dto\EstadiaDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dto\EstadoHabitacionDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dto\HabitacionDTO.java
 C:\Users\Cesar\Desktop\UTN 2025\DISEÑO\TP\g30\src\main\java\tp\g30\dto\HuespedDTO.java

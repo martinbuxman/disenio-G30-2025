@@ -12,6 +12,7 @@ import tp.g30.clases.Habitacion;
 import tp.g30.dao.HabitacionDaoDB;
 import tp.g30.dto.EstadoHabitacionDTO;
 import tp.g30.dto.HabitacionDTO;
+import tp.g30.enums.Estado;
 
 @Service
 public class Gestor_Habitacion {
@@ -68,5 +69,25 @@ public class Gestor_Habitacion {
         historiaEstados.add(nuevoEstado);
 
         habitacionDao.actualizarHabitacion(habitacion);
+    }
+        public void crearEstadoHabitacion(Habitacion habitacion, Estado estado,LocalDate fecha_inicio, LocalDate fecha_fin) {
+        EstadoHabitacion nuevoEstado = new EstadoHabitacion();
+        nuevoEstado.setEstado(estado); 
+        nuevoEstado.setFechaInicio(fecha_inicio);
+        nuevoEstado.setFechaFin(fecha_fin);
+
+        List<EstadoHabitacion> historiaEstados = habitacion.getHistoriaEstados();
+        if (historiaEstados == null) {
+            historiaEstados = new ArrayList<>();
+            habitacion.setHistoriaEstados(historiaEstados);
+        }
+        historiaEstados.add(nuevoEstado);
+
+        habitacionDao.actualizarHabitacion(habitacion);
+    }
+
+
+    public Habitacion buscarHabitacionPorNumero(Long numHabitacion) {
+        return habitacionDao.buscarPorNumero(numHabitacion);
     }
 }

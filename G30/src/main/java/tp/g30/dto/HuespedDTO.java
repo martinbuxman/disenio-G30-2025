@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 @Data
 public class HuespedDTO extends PersonaDTO {
-
+    private long id = 0; 
     @NotBlank(message = "El teléfono no puede estar vacío.")
     private String telefono;
 

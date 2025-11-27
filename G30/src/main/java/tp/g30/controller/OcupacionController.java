@@ -1,15 +1,35 @@
 package tp.g30.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/ocupacion")
+import tp.g30.dto.EstadiaDTO;
+import tp.g30.gestores.Gestor_Estadia;
+
+@RestController
+@RequestMapping("/api/ocupacion")
 public class OcupacionController {
+    @Autowired
+    Gestor_Estadia gestorEstadia;
 
-    @GetMapping("/checkin")
-    public String mostrarPantallaCheckIn() {
-        return "ocupar-habitacion"; 
+
+    @PostMapping("/checkin")
+    public ResponseEntity<String> realizarCheckin(@RequestBody List<EstadiaDTO> estadias) {
+        try {
+            gestorEstadia.crearEstadia(estadias);
+            
+            return ResponseEntity.ok("Check-in completado exitosamente para " + estadias.size() + " habitación(es).");
+        } catch (Exception e) {
+            // Manejo de errores
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al realizar el check-in: " + e.getMessage());
+        }
     }
 }

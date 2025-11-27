@@ -62,4 +62,8 @@ public class Gestor_Usuario{
     public List<Huesped> buscarHuespedes(String nombre, String apellido, String tipoDocumento, String numDocumento) {
         return huespedDaoDB.buscarHuespedes(nombre, apellido, tipoDocumento, numDocumento);
     }
+
+    public Huesped buscarPorId(long id) {
+        return huespedDaoDB.buscarPorId(id);
+    }
 }

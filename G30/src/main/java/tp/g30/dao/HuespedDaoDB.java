@@ -112,5 +112,8 @@ public class HuespedDaoDB implements HuespedDAO {
         }
 
     }
+    public Huesped buscarPorId(long id) {
+        return em.find(Huesped.class, id);
+    }
 
 }

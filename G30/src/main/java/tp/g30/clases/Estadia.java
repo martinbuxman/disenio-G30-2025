@@ -28,7 +28,7 @@ public class Estadia {
     // Relación: Una estadía puede tener varios huéspedes.
     @OneToMany
     @JoinColumn(name = "estadia_id")
-    private List<Huesped> lista_huespedes = new ArrayList<>();
+    private List<Huesped> huespedes = new ArrayList<>();
 
     // Relación: Una estadía puede tener varias facturas.
     @OneToMany
