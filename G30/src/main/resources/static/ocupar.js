@@ -296,94 +296,114 @@ function actualizarEstadoBotonSiguiente() {
         btn.disabled = seleccionActual.size === 0;
     }
 }
+// --- PEGAR ESTO ANTES DE window.handleCellClick ---
+function ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck) {
+    const inicioStr = normalizeDate(d1);
+    const finStr = normalizeDate(d2);
+
+    seleccionActual.set(roomNumber, { inicio: inicioStr, fin: finStr });
+
+    const celdasASeleccionar = [];
+    datesToCheck.forEach(date => {
+        const dateString = normalizeDate(date);
+        const cell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${dateString}"]`);
+        if (cell) celdasASeleccionar.push(cell);
+    });
+
+    celdasASeleccionar.forEach(c => {
+        c.classList.remove('selection-start');
+        Object.values(STATUS_MAPPING).forEach(mapping => c.classList.remove(mapping.class));
+        c.classList.add('status-ocupada');
+        c.innerText = 'O';
+    });
+
+    const errorMessageElement = document.getElementById('error-message');
+    if (errorMessageElement) {
+        errorMessageElement.textContent = `Selección aplicada: Habitación ${roomNumber} del ${inicioStr} al ${finStr}.`;
+        errorMessageElement.classList.remove('d-none', 'alert-danger');
+        errorMessageElement.classList.add('alert', 'alert-success');
+    }
+
+    delete selectionState[roomNumber];
+    actualizarListaSeleccionModal();
+}
+// --- PEGAR ESTO REEMPLAZANDO LA FUNCIÓN QUE ENCONTRASTE ---
 window.handleCellClick = function (roomNumber, dateClicked, status, cellElement) {
-    const errorMessageElement = document.getElementById('error-message'); 
+    const errorMessageElement = document.getElementById('error-message');
+
+    // 1. Validaciones Bloqueantes
     if (status === 'OCUPADA' || status === 'FUERA_DE_SERVICIO') {
         alert(`No puedes iniciar una selección en una fecha que está ${status}.`);
         return;
     }
 
+    // --- PRIMER CLICK ---
     if (!selectionState[roomNumber]) {
-        
         if (seleccionActual.size > 0 || Object.keys(selectionState).length > 0) {
-            limpiarSeleccionVisualActual(); 
+            limpiarSeleccionVisualActual();
         }
-        
         selectionState[roomNumber] = dateClicked;
         cellElement.classList.add('selection-start');
 
-    } else {       
+    // --- SEGUNDO CLICK ---
+    } else {      
         const fechaInicioStr = selectionState[roomNumber];
         const fechaFinStr = dateClicked;
 
         let d1 = new Date(fechaInicioStr + 'T00:00:00');
         let d2 = new Date(fechaFinStr + 'T00:00:00');
         
-        if (d1 > d2) { 
-             [d1, d2] = [d2, d1]; 
-        } 
+        if (d1 > d2) { [d1, d2] = [d2, d1]; }
         
-        const datesToCheck = getDatesInRange(d1, d2); 
+        const datesToCheck = getDatesInRange(d1, d2);
         datesToCheck.push(d2);
 
-        let rangoValido = true;
-        
+        let conflictoBloqueante = false;
+        let conflictoReserva = false;
+        let fechasReservadas = [];
+
+        // Validamos el rango completo
         for (let date of datesToCheck) {
             const dateString = normalizeDate(date);
             const cell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${dateString}"]`);
             
-            if (cell && (cell.dataset.status === 'OCUPADA' || cell.dataset.status === 'FUERA_DE_SERVICIO')) {
-                rangoValido = false;
-                if (errorMessageElement) {
-                    errorMessageElement.textContent = `Error: El rango incluye fechas OCUPADAS o FUERA DE SERVICIO (ej: ${dateString}).`;
+            if (cell) {
+                const cellStatus = cell.dataset.status; 
+                
+                // Error Bloqueante
+                if (cellStatus === 'OCUPADA' || cellStatus === 'FUERA_DE_SERVICIO') {
+                    conflictoBloqueante = true;
+                    if (errorMessageElement) {
+                        errorMessageElement.textContent = `Error: El rango incluye fechas ${cellStatus}.`;
+                        errorMessageElement.classList.remove('d-none', 'alert-success');
+                        errorMessageElement.classList.add('alert', 'alert-danger');
+                    }
+                    break;
                 }
-                break; 
+                
+                // Advertencia (RESERVADA - Flujo 3.D)
+                if (cellStatus === 'RESERVADA') {
+                    conflictoReserva = true;
+                    fechasReservadas.push(dateString);
+                }
             }
         }
 
-        if (!rangoValido) {
+        if (conflictoBloqueante) {
             const startCell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${selectionState[roomNumber]}"]`);
             if (startCell) startCell.classList.remove('selection-start');
-            
-            if (errorMessageElement) {
-                errorMessageElement.classList.remove('d-none', 'alert-success');
-                errorMessageElement.classList.add('alert', 'alert-danger');
-            }
             delete selectionState[roomNumber];
+            return;
+        }
+
+        // AQUÍ ESTÁ LA MAGIA: Si hay reserva, mostramos modal en vez de pintar
+        if (conflictoReserva) {
+            mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas);
             return; 
         }
-        
-        const inicioStr = normalizeDate(d1); 
-        const finStr = normalizeDate(d2); 
-        
-        seleccionActual.set(roomNumber, { inicio: inicioStr, fin: finStr });
-        
-        const celdasASeleccionar = [];
-        datesToCheck.forEach(date => {
-            const dateString = normalizeDate(date);
-            const cell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${dateString}"]`);
-            if (cell) {
-                celdasASeleccionar.push(cell);
-            }
-        });
 
-        celdasASeleccionar.forEach(c => {
-            c.classList.remove('selection-start'); 
-            
-            Object.values(STATUS_MAPPING).forEach(mapping => c.classList.remove(mapping.class));
-            
-            c.classList.add('status-ocupada'); 
-            c.innerText = 'O';
-        });
-        
-        if (errorMessageElement) {
-            errorMessageElement.textContent = `Rango seleccionado para Habitación ${roomNumber}: ${inicioStr} al ${finStr} (${datesToCheck.length} días).`;
-            errorMessageElement.classList.remove('d-none', 'alert-danger');
-            errorMessageElement.classList.add('alert', 'alert-success');
-        }
-
-        delete selectionState[roomNumber];
-        actualizarListaSeleccionModal();
+        // Si está libre, pintamos directo
+        ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck);
     }
 }
 
@@ -840,4 +860,53 @@ if(btnConfirmarFinal) {
         ultimaOcupacionGuardada = nuevaOcupacion; 
         showDecisionModal();
     });
+}
+
+// --- FUNCIÓN CON LA CORRECCIÓN DE Z-INDEX (PEGAR AL FINAL DE OCUPAR.JS) ---
+function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas) {
+    const modalEl = document.getElementById('modalDecisionReserva');
+
+    // 👇👇👇 ESTA ES LA LÍNEA MÁGICA 👇👇👇
+    // Mueve el modal físicamente al final del <body> para asegurar que esté encima de todo
+    document.body.appendChild(modalEl); 
+    // 👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆
+
+    // Creamos la instancia de Bootstrap después de moverlo
+    const modal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: false,
+        focus: true
+    });
+
+    const detalle = document.getElementById('detalleConflictoReserva');
+    if(detalle) {
+        detalle.innerHTML = `
+            <strong>Habitación:</strong> ${roomNumber}<br>
+            <strong>Fechas reservadas:</strong> ${fechasReservadas.join(', ')}
+        `;
+    }
+
+    // Botón OCUPAR IGUAL
+    const btnOcupar = document.getElementById('btnOcuparIgual');
+    const nuevoBtnOcupar = btnOcupar.cloneNode(true);
+    btnOcupar.parentNode.replaceChild(nuevoBtnOcupar, btnOcupar);
+
+    nuevoBtnOcupar.addEventListener('click', function() {
+        modal.hide();
+        ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck);
+    });
+
+    // Botón VOLVER
+    const btnVolver = document.getElementById('btnVolverReserva');
+    const nuevoBtnVolver = btnVolver.cloneNode(true);
+    btnVolver.parentNode.replaceChild(nuevoBtnVolver, btnVolver);
+
+    nuevoBtnVolver.addEventListener('click', function() {
+        const startCell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${selectionState[roomNumber]}"]`);
+        if (startCell) startCell.classList.remove('selection-start');
+        delete selectionState[roomNumber];
+        modal.hide();
+    });
+
+    modal.show();
 }

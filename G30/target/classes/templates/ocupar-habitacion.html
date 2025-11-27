@@ -75,8 +75,9 @@
         }
 
 
-        #modalDecision {
-            z-index: 1060 !important; /* Valor mayor al default de 1055 */
+        /* Agregamos el ID del nuevo modal aquí */
+        #modalDecision, #modalDecisionReserva {
+            z-index: 2000 !important; /* Un número bien alto para asegurar que salga al frente */
         }
         
         .status-libre { background-color: #d4edda; color: #155724; } /* Verde - Success */
@@ -247,8 +248,29 @@
         </div>
     </div>
     
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal" id="modalDecisionReserva" tabindex="-1" aria-hidden="true" 
+     data-bs-backdrop="static" style="z-index: 10000 !important; display: block;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-warning shadow-lg"> <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">⚠️ Conflicto de Reserva</h5>
+            </div>
+            <div class="modal-body bg-white"> <p class="fs-5">La habitación seleccionada tiene días <strong>RESERVADOS</strong>.</p>
+                <div class="alert alert-light border">
+                    <span id="detalleConflictoReserva">Detectada reserva en el rango seleccionado.</span>
+                </div>
+                <p class="small text-muted mb-0">¿Desea sobreescribir la reserva y ocupar la habitación de todos modos?</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-between bg-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnVolverReserva">
+                    ⬅ Volver
+                </button>
+                <button type="button" class="btn btn-warning fw-bold" id="btnOcuparIgual">
+                    Ocupar Igual ➡
+                </button>
+            </div>
+        </div>
+    </div>
+</div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/ocupar.js"></script>
 </body>
 </html>
