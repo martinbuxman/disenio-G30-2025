@@ -74,7 +74,11 @@
             cursor: default;
         }
 
-        /* Estilos de Estado (Mapeo de Colores a Temas de Bootstrap) */
+
+        #modalDecision {
+            z-index: 1060 !important; /* Valor mayor al default de 1055 */
+        }
+        
         .status-libre { background-color: #d4edda; color: #155724; } /* Verde - Success */
         .status-reservada { background-color: #fff3cd; color: #856404; } /* Amarillo - Warning */
         .status-ocupada { background-color: #f8d7da; color: #721c24; } /* Rojo - Danger */
@@ -139,7 +143,36 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="modalDecision" tabindex="-1" aria-labelledby="modalDecisionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalDecisionLabel">✅Ocupación Guardada</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Se ha guardado la configuración de la habitación. ¿Qué desea hacer ahora?</p>
+                    <h3 class="mb-3">Habitaciones pendientes: <span id="contadorHabitacionesPendientes" class="badge bg-primary">0</span></h3>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-primary" id="btnDecisionVolverCarga">
+                                    ⏪ Volver a la Carga
+                                </button>
+                                
+                                <button type="button" class="btn btn-outline-secondary" id="btnDecisionSeguir">
+                                    ➡️ Cargar Otra Habitación
+                                </button>
+                                
+                                <button type="button" class="btn btn-success" id="btnDecisionSalir">
+                                    ✅ Salir y Confirmar Todo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modalOcupacion" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -156,10 +189,34 @@
 
                     <form id="formCheckIn">
                         <h6 class="border-bottom pb-2 mb-3">Huesped Responsable</h6>
-                        <div class="input-group mb-3">
-                            <input type="number" id="buscarDniResponsable" class="form-control" placeholder="DNI del Responsable">
-                            <button class="btn btn-outline-primary" type="button" id="btnBuscarResponsable">Buscar</button>
-                        </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" id="busqApellido" class="form-control form-control-sm" placeholder="Apellido">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="busqNombre" class="form-control form-control-sm" placeholder="Nombre">
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="busqTipoDoc" class="form-select form-select-sm">
+                                        <option value="DNI">DNI</option>
+                                        <option value="PASAPORTE">PASAPORTE</option>
+                                        <option value="LE">LE</option>
+                                        <option value="LC">LC</option>
+                                        <option value="OTRO">OTRO</option>                                                                                
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" id="busqNroDoc" class="form-control form-control-sm" placeholder="Número">
+                                </div>
+                            </div>
+                            <div class="d-grid mb-3">
+                                <button class="btn btn-primary btn-sm" type="button" id="btnBuscarResponsable">
+                                    <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                                    Buscar Huésped
+                                </button>
+                            </div>
+
+                            <div id="resultadosBusquedaResponsable" class="mb-3"></div>
                         
                         <div id="infoResponsable" class="alert alert-success d-none">
                             <strong>Responsable:</strong> <span id="nombreResponsable"></span>
@@ -171,12 +228,17 @@
                         </h6>
                         <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
                             <table class="table table-sm table-bordered" id="tablaAcompanantes">
-                                <thead class="table-light"><tr><th>DNI</th><th>Nombre</th><th></th></tr></thead>
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 15%;">Tipo Doc</th>
+                                        <th style="width: 25%;">Nro Doc</th>
+                                        <th style="width: 25%;">Apellido</th>
+                                        <th style="width: 15%;">Nombre</th>
+                                        <th style="width: 20%;">Acción</th> </tr>
+                                </thead>
                                 <tbody></tbody>
                             </table>
                         </div>
-                    </form>
-                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
                     <button type="button" class="btn btn-primary" id="btnConfirmarOcupacionFinal">Confirmar</button>
@@ -184,6 +246,7 @@
             </div>
         </div>
     </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/ocupar.js"></script>

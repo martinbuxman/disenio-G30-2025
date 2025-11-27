@@ -3,6 +3,8 @@
 // ==========================================
 const modalOcupacionElement = document.getElementById('modalOcupacion');
 const modalOcupacion = modalOcupacionElement ? new bootstrap.Modal(modalOcupacionElement) : null;
+const modalDecisionElement = document.getElementById('modalDecision');
+const modalDecision = modalDecisionElement ? new bootstrap.Modal(modalDecisionElement) : null;
 let selectionState = {};
 let roomTypesMap = {}; 
 let reservasConfirmadas = [];
@@ -38,6 +40,169 @@ function formatDateLabel(date) {
     return `${dayName}, ${date.getDate()}/${date.getMonth() + 1}`;
 }
 
+//buscar huespedes en el backend
+async function buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc) {
+    const params = new URLSearchParams();
+    if (apellido) params.append("apellido", apellido);
+    if (nombre) params.append("nombre", nombre);
+    if (tipoDoc) params.append("tipo_documento", tipoDoc);
+    if (nroDoc) params.append("num_documento", nroDoc);
+
+    const url = `/api/huespedes/buscar?${params.toString()}`;
+    console.log("Buscando en:", url);
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Error en la búsqueda");
+        return await response.json(); // Retorna la lista de huéspedes
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+function renderTablaResultados(huespedes, callbackSeleccion) {
+    if (!huespedes || huespedes.length === 0) {
+        return '<div class="alert alert-warning">No se encontraron resultados.</div>';
+    }
+
+    let html = `
+    <div class="table-responsive mt-2 border rounded">
+        <table class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Apellido y Nombre</th>
+                    <th>Documento</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    huespedes.forEach(h => {
+        html += `
+            <tr>
+                <td>${h.apellido}, ${h.nombre}</td>
+                <td>${h.tipoDocumento} ${h.numDocumento}</td>
+                <td>
+                    <button class="btn btn-sm btn-success btn-seleccionar-huesped" 
+                        data-id="${h.id}" 
+                        data-nombre="${h.nombre}" 
+                        data-apellido="${h.apellido}"
+                        data-doc="${h.numDocumento}"
+                        data-tipo="${h.tipoDocumento}">
+                        Seleccionar
+                    </button>
+                </td>
+            </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    return html;
+}
+
+function renderTablaResultadosAcomp(huespedes, targetRowId) {
+    // Añadimos un botón para cerrar la lista de resultados
+    const closeButton = `<button type="button" class="btn-close" 
+                         onclick="document.getElementById('${targetRowId}').querySelector('.acomp-results-container').innerHTML = ''"></button>`;
+
+    if (!huespedes || huespedes.length === 0) {
+        return `
+        <div class="card p-2 my-1 shadow-lg bg-light" style="min-width: 350px;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="small text-danger mb-0">No se encontraron resultados.</h6>
+                ${closeButton}
+            </div>
+        </div>`;
+    }
+
+    let html = `
+    <div class="card p-2 my-1 shadow-lg bg-white" style="min-width: 450px; max-height: 250px; overflow-y: auto;">
+        <div class="d-flex justify-content-between align-items-center mb-1 border-bottom pb-1">
+            <h6 class="small text-primary mb-0">Resultados encontrados (${huespedes.length}):</h6>
+            ${closeButton}
+        </div>
+        <ul class="list-group list-group-flush small">`;
+
+    huespedes.forEach(h => {
+        const huespedData = JSON.stringify({
+            id: h.id, 
+            nombre: h.nombre, 
+            apellido: h.apellido, 
+            numDocumento: h.numDocumento, 
+            tipoDocumento: h.tipoDocumento
+        }).replace(/"/g, '&quot;');
+        
+        html += `
+            <li class="list-group-item d-flex justify-content-between align-items-center p-1">
+                ${h.apellido}, ${h.nombre} 
+                <span class="text-muted small">${h.numDocumento}</span>
+                <button type="button" class="btn btn-sm btn-success py-0 px-2" 
+                    onclick='seleccionarAcompanante(${huespedData}, "${targetRowId}")'>
+                    Seleccionar
+                </button>
+            </li>`;
+    });
+
+    html += `</ul></div>`;
+    return html;
+}
+
+// --- LÓGICA DE SELECCIÓN PARA EL ACOMPAÑANTE ---
+window.seleccionarAcompanante = function (huesped, rowId) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+
+    // Rellenar los inputs de la fila específica (usando los 4 campos)
+    row.querySelector('select[name="tipoDocumentoAcomp"]').value = huesped.tipoDocumento;
+    row.querySelector('input[name="numDocumentoAcomp"]').value = huesped.numDocumento;
+    row.querySelector('input[name="apellidoAcomp"]').value = huesped.apellido;
+    row.querySelector('input[name="nombreAcomp"]').value = huesped.nombre;
+    
+    // Limpiar resultados
+    row.querySelector('.acomp-results-container').innerHTML = '';
+    
+    // Almacenar el ID del huésped para el envío final al backend
+    let idInput = row.querySelector('input[name="idAcomp"]');
+    if (!idInput) {
+         idInput = document.createElement('input');
+         idInput.type = 'hidden';
+         idInput.name = 'idAcomp';
+         row.cells[0].appendChild(idInput);
+    }
+    idInput.value = huesped.id;
+};
+
+
+// --- FUNCIÓN DE BÚSQUEDA Y SELECCIÓN PARA ACOMPAÑANTES ---
+async function handleAcompananteSearch(event) {
+    const btn = event.currentTarget;
+    const rowId = btn.dataset.rowId;
+    const row = document.getElementById(rowId);
+    
+    // Obtener los inputs de la fila
+    const tipoDoc = row.querySelector('select[name="tipoDocumentoAcomp"]').value.trim();
+    const nroDoc = row.querySelector('input[name="numDocumentoAcomp"]').value.trim();
+    const apellido = row.querySelector('input[name="apellidoAcomp"]').value.trim();
+    const nombre = row.querySelector('input[name="nombreAcomp"]').value.trim();
+    // El contenedor de resultados ya no está en la misma celda, sino posicionado en la última
+    const resultsContainer = row.querySelector('.acomp-results-container');
+    
+    // Ya NO SE VALIDA: Si todos están vacíos, buscarHuespedesBackend devolverá todos los huéspedes.
+    
+    // Interfaz de carga
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    resultsContainer.innerHTML = ''; // Limpiar resultados anteriores
+
+    // Buscar
+    const resultados = await buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc);
+
+    // Renderizar Resultados
+    resultsContainer.innerHTML = renderTablaResultadosAcomp(resultados, rowId);
+    
+    // Restaurar botón
+    btn.disabled = false;
+    btn.innerHTML = '🔍';
+}
 // ==========================================
 // 3. GRILLA (CU05)
 // ==========================================
@@ -138,7 +303,10 @@ window.handleCellClick = function (roomNumber, dateClicked, status, cellElement)
     }
 
     if (!selectionState[roomNumber]) {
-        limpiarSeleccionVisual(roomNumber);
+        
+        if (seleccionActual.size > 0 || Object.keys(selectionState).length > 0) {
+            limpiarSeleccionVisualActual(); 
+        }
         
         selectionState[roomNumber] = dateClicked;
         cellElement.classList.add('selection-start');
@@ -218,25 +386,161 @@ window.handleCellClick = function (roomNumber, dateClicked, status, cellElement)
     }
 }
 
-function limpiarSeleccionVisual(roomNumber) {
-    seleccionActual.delete(roomNumber);
-    const cellsToClear = document.querySelectorAll(`.availability-cell[data-room="${roomNumber}"].status-ocupada`);
-    
-    cellsToClear.forEach(cell => {
-        const originalStatusKey = cell.dataset.status; 
-        const statusMapping = STATUS_MAPPING[originalStatusKey] || STATUS_MAPPING['LIBRE'];
+function limpiarSeleccionVisualActual() {
+  
+    seleccionActual.forEach((rango, roomNumber) => {
+        const cellsToClear = document.querySelectorAll(`.availability-cell[data-room="${roomNumber}"]`);
+        
+        cellsToClear.forEach(cell => {
+            if (cell.classList.contains('status-ocupada') || cell.classList.contains('selection-start')) {
+                const originalStatusKey = cell.dataset.status; 
+                const statusMapping = STATUS_MAPPING[originalStatusKey] || STATUS_MAPPING['LIBRE'];
 
-        cell.classList.remove('status-ocupada');
-        cell.classList.remove('selection-start'); 
-        
-        Object.values(STATUS_MAPPING).forEach(mapping => cell.classList.remove(mapping.class));
-        cell.classList.add(statusMapping.class);
-        
-        cell.innerText = statusMapping.label; 
+                cell.classList.remove('status-ocupada');
+                cell.classList.remove('selection-start'); 
+                Object.values(STATUS_MAPPING).forEach(mapping => cell.classList.remove(mapping.class));
+                cell.classList.add(statusMapping.class);
+                cell.innerText = statusMapping.label; 
+            }
+        });
     });
+    
+    // 2. Limpiar el estado de selección de datos
+    seleccionActual.clear();
+    selectionState = {}; // Limpia el click inicial pendiente en CUALQUIER habitación
+    
+    const errorMessageElement = document.getElementById('error-message'); 
+    if (errorMessageElement) {
+        errorMessageElement.classList.add('d-none');
+    }
+    actualizarListaSeleccionModal();
+}
+
+function obtenerDatosDeOcupacion() {
+    // 1. Obtener datos del Responsable
+    const idResponsable = document.getElementById('idResponsableInput').value;
+    const infoResponsable = document.getElementById('infoResponsable');
+    
+    // Validar que se haya seleccionado un responsable
+    if (!idResponsable || infoResponsable.classList.contains('d-none')) {
+        alert("Por favor, seleccione un Huésped Responsable.");
+        return null;
+    }
+    
+    // 2. Obtener datos de Acompañantes
+    const acompanantes = [];
+    const filasAcomp = document.querySelectorAll('#tablaAcompanantes tbody tr');
+    
+    filasAcomp.forEach(row => {
+        // Buscamos el ID oculto que se agrega al seleccionar un huésped o lo dejamos vacío si no se seleccionó
+        const idInput = row.querySelector('input[name="idAcomp"]');
+        
+        const acompData = {
+            id: idInput ? idInput.value : null, // Puede ser null si el acompañante es nuevo
+            tipoDocumento: row.querySelector('select[name="tipoDocumentoAcomp"]').value,
+            numDocumento: row.querySelector('input[name="numDocumentoAcomp"]').value,
+            apellido: row.querySelector('input[name="apellidoAcomp"]').value,
+            nombre: row.querySelector('input[name="nombreAcomp"]').value,
+        };
+        // Agregas el acompañante si tiene al menos apellido o DNI (puedes ajustar esta validación)
+        if (acompData.apellido.trim() || acompData.numDocumento.trim()) {
+            acompanantes.push(acompData);
+        }
+    });
+    
+    // 3. Obtener la selección de Habitaciones
+    const habitacionesSeleccionadas = [];
+    seleccionActual.forEach((rango, roomNumber) => {
+        habitacionesSeleccionadas.push({
+            numeroHabitacion: roomNumber,
+            fechaInicio: rango.inicio,
+            fechaFin: rango.fin,
+            tipoHabitacion: roomTypesMap[roomNumber], 
+        });
+    });
+
+    if (habitacionesSeleccionadas.length === 0) {
+        alert("Error: No hay habitaciones seleccionadas en la memoria temporal.");
+        return null;
+    }
+    
+    // Retornar la estructura final de la ocupación
+    return {
+        habitaciones: habitacionesSeleccionadas,
+        responsableId: idResponsable,
+        acompanantes: acompanantes, 
+        tipoOcupacion: 'CHECK_IN' 
+    };
+}
+function showDecisionModal() {
+    if (!modalDecision) return;
+
+    let totalGuardadas = reservasConfirmadas.length;
+    if (ultimaOcupacionGuardada) {
+        totalGuardadas += 1;
+    }
+    
+    const contador = document.getElementById('contadorHabitacionesPendientes');
+    if(contador) {
+        contador.textContent = totalGuardadas;
+    }
+    
+    modalDecision.show();
+}
+// Función auxiliar para limpiar y reestablecer la grilla
+function limpiarGrillaYSeleccion() {
+    // 1. Limpiar el estado de selección (mapa y visual)
+    limpiarSeleccionVisualActual(); // Usa la nueva función global
+    
+
+    const errorMessageElement = document.getElementById('error-message'); 
+    if (errorMessageElement) {
+        errorMessageElement.classList.add('d-none');
+    }
 }
 
 
+// --- FUNCIÓN FINAL DE ENVÍO ---
+const API_URL_OCUPACION = '/api/v1/ocupacion/checkin'; 
+
+async function enviarOcupacionesAlBackend(ocupaciones) {
+    if (ocupaciones.length === 0) {
+        alert("No hay ocupaciones para enviar.");
+        return;
+    }
+    
+    console.log("Iniciando envío al backend de:", ocupaciones);
+
+    try {
+        const response = await fetch(API_URL_OCUPACION, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify(ocupaciones) 
+        });
+
+
+        if (response.ok) {
+            const result = await response.json(); 
+            
+            console.log("✅ Éxito al guardar las ocupaciones. Respuesta del servidor:", result);
+            
+            reservasConfirmadas = [];
+            seleccionActual.clear(); 
+            alert(`🎉 ¡Check-in completado exitosamente para ${ocupaciones.length} habitación(es)!`);
+
+            window.location.reload(); 
+        } else {
+            const errorText = await response.text();
+            console.error(`❌ Error al enviar ocupaciones. Código: ${response.status}`, errorText);
+            alert(`Hubo un error (${response.status}) al intentar ocupar las habitaciones. Consulte la consola para más detalles.`);
+        }
+    } catch (error) {
+        console.error("❌ Error de red/conexión:", error);
+        alert("No se pudo conectar con el servidor para realizar el check-in.");
+    }
+}
 
 function actualizarListaSeleccionModal() {
     const listaHtml = document.getElementById('listaSeleccionModal');
@@ -357,6 +661,7 @@ window.showRoomAvailability = async function () {
     }
 }
 
+
 // --- BOTÓN SIGUIENTE (ABRIR MODAL) ---
 const btnVerificar = document.getElementById('btnVerificarSeleccion');
 if(btnVerificar) {
@@ -379,41 +684,131 @@ if(btnVerificar) {
         if(modalOcupacion) modalOcupacion.show();
     });
 }
-
-// --- BOTÓN BUSCAR RESPONSABL ---
 const btnBuscarResp = document.getElementById('btnBuscarResponsable');
-if(btnBuscarResp) {
-    btnBuscarResp.addEventListener('click', async function() {
-        const dni = document.getElementById('buscarDniResponsable').value;
-        if(!dni) { alert("Ingrese DNI"); return; }
-        
-        // Simulación
-        document.getElementById('infoResponsable').classList.remove('d-none');
-        document.getElementById('nombreResponsable').textContent = "Huesped Encontrado (DNI " + dni + ")";
-        document.getElementById('idResponsableInput').value = "1"; 
+if (btnBuscarResp) {
+    btnBuscarResp.addEventListener('click', async function () {
+        const apellido = document.getElementById('busqApellido').value;
+        const nombre = document.getElementById('busqNombre').value;
+        const tipoDoc = document.getElementById('busqTipoDoc').value;
+        const nroDoc = document.getElementById('busqNroDoc').value;
+
+        // 1. Buscar
+        const resultados = await buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc);
+
+        // 2. Renderizar Resultados
+        const contenedorResultados = document.getElementById('resultadosBusquedaResponsable'); // Asegúrate de crear este div en tu HTML
+        if (contenedorResultados) {
+            contenedorResultados.innerHTML = renderTablaResultados(resultados);
+
+            // 3. Asignar eventos a los botones "Seleccionar"
+            contenedorResultados.querySelectorAll('.btn-seleccionar-huesped').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = this.dataset.id;
+                    const nombreCompleto = `${this.dataset.apellido}, ${this.dataset.nombre}`;
+                    const doc = `${this.dataset.tipo} ${this.dataset.doc}`;
+
+                    // Rellenar datos del responsable
+                    document.getElementById('infoResponsable').classList.remove('d-none');
+                    document.getElementById('nombreResponsable').textContent = `${nombreCompleto} (${doc})`;
+                    document.getElementById('idResponsableInput').value = id;
+                    
+                    // Limpiar resultados
+                    contenedorResultados.innerHTML = '';
+                });
+            });
+        }
     });
 }
 
 // --- BOTÓN AGREGAR ACOMPAÑANTE ---
 const btnAgregarAcomp = document.getElementById('btnAgregarAcompananteRow');
-if(btnAgregarAcomp) {
-    btnAgregarAcomp.addEventListener('click', function() {
+if (btnAgregarAcomp) {
+    btnAgregarAcomp.addEventListener('click', function () {
         const tbody = document.querySelector('#tablaAcompanantes tbody');
         const row = document.createElement('tr');
+        
+        const rowId = `acomp-row-${Date.now()}`;
+        row.id = rowId;
+
         row.innerHTML = `
-            <td><input type="number" class="form-control form-control-sm" placeholder="DNI"></td>
-            <td><input type="text" class="form-control form-control-sm" placeholder="Nombre"></td>
-            <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">X</button></td>
+            <td>
+                <select class="form-select form-select-sm" name="tipoDocumentoAcomp">
+                    <option value="DNI">DNI</option>
+                    <option value="PASAPORTE">PASAPORTE</option>
+                    <option value="LE">LE</option>
+                    <option value="LC">LC</option>
+                    <option value="OTRO">OTRO</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control form-control-sm" placeholder="Número" name="numDocumentoAcomp"></td>
+            <td><input type="text" class="form-control form-control-sm" placeholder="Apellido" name="apellidoAcomp"></td>
+            <td><input type="text" class="form-control form-control-sm" placeholder="Nombre" name="nombreAcomp"></td>
+            
+            <td class="position-relative"> 
+                <div class="d-flex gap-1 justify-content-center">
+                    <button type="button" class="btn btn-sm btn-outline-primary btn-search-acomp" data-row-id="${rowId}">🔍</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">X</button>
+                </div>
+                <div class="acomp-results-container" data-row-id="${rowId}" 
+                     style="position: absolute; 
+                            top: 0; /* Anclado arriba de la celda */
+                            right: 100%; /* Posicionado a la izquierda de la celda para no chocar con el botón X */
+                            transform: translateY(-50%); /* Ajuste vertical para centrar con el botón */
+                            z-index: 1050; /* Alto z-index para que esté sobre otros elementos */
+                            min-width: 450px;">
+                </div> 
+            </td>
         `;
         tbody.appendChild(row);
+        
+        row.querySelector('.btn-search-acomp').addEventListener('click', handleAcompananteSearch);
+    });
+}
+let ultimaOcupacionGuardada = null; 
+
+const btnDecisionVolverCarga = document.getElementById('btnDecisionVolverCarga');
+if (btnDecisionVolverCarga) {
+    btnDecisionVolverCarga.addEventListener('click', function() {
+        modalDecision.hide();
     });
 }
 
-// --- BOTÓN CONFIRMAR FINAL ---
+const btnDecisionSeguir = document.getElementById('btnDecisionSeguir');
+if (btnDecisionSeguir) {
+    btnDecisionSeguir.addEventListener('click', function() {
+        modalDecision.hide();
+        if (ultimaOcupacionGuardada) {
+            reservasConfirmadas.push(ultimaOcupacionGuardada);
+            ultimaOcupacionGuardada = null;
+        }
+        if(modalOcupacion) modalOcupacion.hide();
+        limpiarGrillaYSeleccion(); 
+        
+    });
+}
+const btnDecisionSalir = document.getElementById('btnDecisionSalir');
+if (btnDecisionSalir) {
+    btnDecisionSalir.addEventListener('click', function() {
+        modalDecision.hide();
+        if (ultimaOcupacionGuardada) {
+            reservasConfirmadas.push(ultimaOcupacionGuardada);
+            ultimaOcupacionGuardada = null;
+        }
+        if(modalOcupacion) modalOcupacion.hide();
+        enviarOcupacionesAlBackend(reservasConfirmadas);
+    });
+}
+
+
+
+// --- BOTÓN CONFIRMAR FINAL
 const btnConfirmarFinal = document.getElementById('btnConfirmarOcupacionFinal');
 if(btnConfirmarFinal) {
     btnConfirmarFinal.addEventListener('click', function() {
-        alert("Datos listos para enviar al Backend.\nItems: " + seleccionActual.size);
-        if(modalOcupacion) modalOcupacion.hide();
+        const nuevaOcupacion = obtenerDatosDeOcupacion();
+        if (!nuevaOcupacion) return; 
+        
+        ultimaOcupacionGuardada = nuevaOcupacion; 
+        showDecisionModal();
     });
 }
