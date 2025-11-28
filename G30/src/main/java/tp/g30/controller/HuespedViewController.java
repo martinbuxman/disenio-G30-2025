@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import tp.g30.clases.Huesped;
-import tp.g30.gestores.Gestor_Usuario;
+import tp.g30.gestores.Gestor_Huesped;
 
 @Controller
 @RequestMapping("/huespedes")
 public class HuespedViewController {
-    private final Gestor_Usuario gestorHuesped;
+    private final Gestor_Huesped gestorHuesped;
     
-    public HuespedViewController(Gestor_Usuario gestorHuesped) {
+    public HuespedViewController(Gestor_Huesped gestorHuesped) {
         this.gestorHuesped = gestorHuesped;
     }
     // Mapea la ruta completa: http://localhost:8080/huespedes/alta

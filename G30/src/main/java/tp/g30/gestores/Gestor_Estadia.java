@@ -17,7 +17,7 @@ import tp.g30.dto.HuespedDTO;
 @Service   
 public class Gestor_Estadia {
     @Autowired
-    Gestor_Usuario gestorHuesped;
+    Gestor_Huesped gestorHuesped;
     @Autowired
     Gestor_Habitacion gestorHabitacion;
     @Autowired

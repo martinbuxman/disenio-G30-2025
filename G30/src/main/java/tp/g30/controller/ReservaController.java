@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,24 +15,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tp.g30.dto.HabitacionDTO;
 import tp.g30.dto.ReservaDTO;
+import tp.g30.gestores.Gestor_Habitacion;
 import tp.g30.gestores.Gestor_Reserva;
 
 
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservaController {
-
+    @Autowired
     private final Gestor_Reserva gestorReserva;
 
-     public ReservaController(Gestor_Reserva gestorReserva) {
-         this.gestorReserva = gestorReserva;
-    }
+    @Autowired
+    private final Gestor_Habitacion gestorHabitacion;
 
+    public ReservaController(Gestor_Reserva gestorReserva, Gestor_Habitacion gestorHabitacion) {
+        this.gestorReserva = gestorReserva;
+        this.gestorHabitacion = gestorHabitacion;
+    }
+    
      @GetMapping("/disponibilidad")
      public List<HabitacionDTO> getDisponibilidad(
              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaDesde,
              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaHasta) {
-        return gestorReserva.mostrarEstadoHabitaciones(fechaDesde, fechaHasta);
+        return gestorHabitacion.mostrarEstadoHabitaciones(fechaDesde, fechaHasta);
      }
     
     @PostMapping("/confirmar")
