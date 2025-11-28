@@ -1,7 +1,6 @@
 package tp.g30.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,6 @@ public class OcupacionController {
             
             return ResponseEntity.ok("Check-in completado exitosamente para " + estadias.size() + " habitación(es).");
         } catch (Exception e) {
-            // Manejo de errores
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error al realizar el check-in: " + e.getMessage());
         }

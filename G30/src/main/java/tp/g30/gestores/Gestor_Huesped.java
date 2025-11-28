@@ -17,20 +17,15 @@ import tp.g30.dao.HuespedDaoDB;
 import tp.g30.dto.HuespedDTO;
 
 
-/**
- *
- * @author juanc
- */
-
 @Service
 
-public class Gestor_Usuario{
+public class Gestor_Huesped{
     @Autowired
     private HuespedDaoDB huespedDaoDB;
 
 
     @Autowired
-    public Gestor_Usuario(HuespedDaoDB huespedDaoDB) {
+    public Gestor_Huesped(HuespedDaoDB huespedDaoDB) {
         this.huespedDaoDB = huespedDaoDB;
     }
  

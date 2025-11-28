@@ -37,7 +37,7 @@ public class Gestor_Reserva {
 
     public Long confirmarReserva(ReservaDTO reservaDTO) throws Exception {
 
-HuespedDTO huespedDTO = reservaDTO.getHuespedPrincipal();
+        HuespedDTO huespedDTO = reservaDTO.getHuespedPrincipal();
         Huesped huespedPrincipal;
         Huesped huespedExistente = huespedDaoDB.buscarHuespedPorDatos(
             huespedDTO.getNombre(),

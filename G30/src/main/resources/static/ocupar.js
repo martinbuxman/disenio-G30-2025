@@ -221,13 +221,6 @@ function getRoomStatusForDate(room, dateStr) {
     return currentStatus;
 }
 
-async function fetchRoomAvailability(startDate, endDate) {
-    const url = `/api/reservas/disponibilidad?fechaDesde=${startDate}&fechaHasta=${endDate}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(await response.text());
-    return response.json();
-}
-
 function generateAvailabilityGrid(dates, rooms) {
     const occupancyGrid = document.getElementById('availability-timeline');
     occupancyGrid.innerHTML = '';
@@ -538,8 +531,7 @@ function showDecisionModal() {
 }
 // Función auxiliar para limpiar y reestablecer la grilla
 function limpiarGrillaYSeleccion() {
-    // 1. Limpiar el estado de selección (mapa y visual)
-    limpiarSeleccionVisualActual(); // Usa la nueva función global
+    limpiarSeleccionVisualActual();
     
 
     const errorMessageElement = document.getElementById('error-message'); 
@@ -862,16 +854,9 @@ if(btnConfirmarFinal) {
     });
 }
 
-// --- FUNCIÓN CON LA CORRECCIÓN DE Z-INDEX (PEGAR AL FINAL DE OCUPAR.JS) ---
 function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas) {
     const modalEl = document.getElementById('modalDecisionReserva');
-
-    // 👇👇👇 ESTA ES LA LÍNEA MÁGICA 👇👇👇
-    // Mueve el modal físicamente al final del <body> para asegurar que esté encima de todo
     document.body.appendChild(modalEl); 
-    // 👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆
-
-    // Creamos la instancia de Bootstrap después de moverlo
     const modal = new bootstrap.Modal(modalEl, {
         backdrop: 'static',
         keyboard: false,

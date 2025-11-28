@@ -29,7 +29,6 @@ tp\g30\gestores\Gestor_Habitacion.class
 tp\g30\clases\Huesped.class
 tp\g30\clases\Persona.class
 tp\g30\controller\ReservaViewController.class
-tp\g30\gestores\Gestor_Usuario.class
 tp\g30\controller\ViewController.class
 tp\g30\dto\EstadoHabitacionDTO.class
 tp\g30\clases\NotBlank.class
