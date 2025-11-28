@@ -20,7 +20,6 @@ public class HuespedViewController {
     public HuespedViewController(Gestor_Huesped gestorHuesped) {
         this.gestorHuesped = gestorHuesped;
     }
-    // Mapea la ruta completa: http://localhost:8080/huespedes/alta
     @GetMapping("/alta") 
     public String mostrarFormularioAlta(Model model) {
         model.addAttribute("titulo", "Formulario de Alta de Huésped");

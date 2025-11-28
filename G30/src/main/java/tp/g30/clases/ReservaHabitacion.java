@@ -21,7 +21,7 @@ public class ReservaHabitacion {
     private Habitacion habitacion;
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
-        @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "id_reserva")
     private Reserva reserva;
 
