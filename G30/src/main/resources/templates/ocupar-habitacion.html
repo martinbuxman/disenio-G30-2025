@@ -76,7 +76,7 @@
 
 
         /* Agregamos el ID del nuevo modal aquí */
-        #modalDecision, #modalDecisionReserva {
+        #modalDecision {
             z-index: 2000 !important; /* Un número bien alto para asegurar que salga al frente */
         }
         
@@ -252,9 +252,9 @@
         </div>
     </div>
     
-    <div class="modal" id="modalDecisionReserva" tabindex="-1" aria-hidden="true" 
-     data-bs-backdrop="static" style="z-index: 10000 !important; display: block;">
-    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal fade" id="modalDecisionReserva" tabindex="-1" aria-hidden="true" 
+        data-bs-backdrop="static">
+        </div>
         <div class="modal-content border-warning shadow-lg"> <div class="modal-header bg-warning text-dark">
                 <h5 class="modal-title">⚠️ Conflicto de Reserva</h5>
             </div>
