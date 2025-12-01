@@ -70,7 +70,7 @@ public class Gestor_Habitacion {
 
         habitacionDao.actualizarHabitacion(habitacion);
     }
-        public void crearEstadoHabitacion(Habitacion habitacion, Estado estado,LocalDate fecha_inicio, LocalDate fecha_fin) {
+    public void crearEstadoHabitacion(Habitacion habitacion, Estado estado,LocalDate fecha_inicio, LocalDate fecha_fin) {
         EstadoHabitacion nuevoEstado = new EstadoHabitacion();
         nuevoEstado.setEstado(estado); 
         nuevoEstado.setFechaInicio(fecha_inicio);
