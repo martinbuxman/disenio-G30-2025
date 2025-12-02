@@ -12,7 +12,12 @@ let reservasConfirmadas = [];
 
 
 let seleccionActual = new Map();
-
+const STATUS_PRIORITY = {
+    'FUERA_DE_SERVICIO': 4, 
+    'OCUPADA': 3,          
+    'RESERVADA': 2,        
+    'LIBRE': 1              
+};
 const STATUS_MAPPING = {
     'LIBRE': { class: 'status-libre', label: 'L' },
     'OCUPADA': { class: 'status-ocupada', label: 'O' },
@@ -37,6 +42,51 @@ function getDatesInRange(startDate, endDate) {
     return dates;
 }
 
+// function getRoomStatusForDate(room, date) {
+    
+//     let highestPriority = STATUS_PRIORITY.LIBRE;
+//     let finalStatus = 'LIBRE';
+
+//     if (room.historiaEstados) {
+//         room.historiaEstados.forEach(estado => {
+//             const start = new Date(estado.fechaInicio + 'T00:00:00');
+//             const end = new Date(estado.fechaFin + 'T00:00:00'); // Asume que la fecha de fin es exclusiva
+
+//             // Verifica si la fecha actual está dentro del rango del estado
+//             if (date >= start && date <= end) { 
+//                 const currentStatus = estado.estado;
+//                 const currentPriority = STATUS_PRIORITY[currentStatus] || STATUS_PRIORITY.LIBRE;
+                
+//                 // Aplica la lógica de prioridad
+//                 if (currentPriority > highestPriority) {
+//                     highestPriority = currentPriority;
+//                     finalStatus = currentStatus;
+//                 }
+//             }
+//         });
+//     }
+
+//     return finalStatus;
+// }
+function getRoomStatusForDate(room, dateStr) {
+    let finalStatus = 'LIBRE'; 
+    let highestPriority = STATUS_PRIORITY.LIBRE;
+    if(!room.historiaEstados) return 'LIBRE';
+    for (const estado of room.historiaEstados) {
+        const fInicio = estado.fechaInicio; 
+        const fFin = estado.fechaFin; 
+
+        if (dateStr >= fInicio && dateStr <= fFin) {
+            currentStatus = estado.estado;
+            const currentPriority = STATUS_PRIORITY[currentStatus] || STATUS_PRIORITY.LIBRE; 
+            if (currentPriority > highestPriority) {
+                highestPriority = currentPriority;
+                finalStatus = currentStatus;
+            }
+        }
+    }
+    return finalStatus;
+}
 function formatDateLabel(date) {
     const dayName = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'][date.getDay()];
     return `${dayName}, ${date.getDate()}/${date.getMonth() + 1}`;
@@ -208,19 +258,7 @@ async function handleAcompananteSearch(event) {
 // ==========================================
 // 3. GRILLA (CU05)
 // ==========================================
-function getRoomStatusForDate(room, dateStr) {
-    let currentStatus = 'LIBRE'; 
-    if(!room.historiaEstados) return 'LIBRE';
-    for (const estado of room.historiaEstados) {
-        const fInicio = estado.fechaInicio; 
-        const fFin = estado.fechaFin; 
-        if (dateStr >= fInicio && dateStr <= fFin) {
-            currentStatus = estado.estado;
-            break; 
-        }
-    }
-    return currentStatus;
-}
+
 
 function generateAvailabilityGrid(dates, rooms) {
     const occupancyGrid = document.getElementById('availability-timeline');
@@ -674,12 +712,9 @@ window.showRoomAvailability = async function () {
         const room = roomData.find(r => String(r.numeroHabitacion) === String(reservaTemp.habitacion.numeroHabitacion));
         
         if (room && reservaTemp.habitacion.historiaEstados && reservaTemp.habitacion.historiaEstados.length > 0) {
-                    // 🛑 Inicializar el array historiaEstados si no existe (seguridad)
                     if (!room.historiaEstados) {
                         room.historiaEstados = [];
                     }
-                    
-                    // Inyectar el estado de ocupación temporal
                     const estadoSimulado = reservaTemp.habitacion.historiaEstados[0];
                     room.historiaEstados.push({
                         estado: 'OCUPADA', 
