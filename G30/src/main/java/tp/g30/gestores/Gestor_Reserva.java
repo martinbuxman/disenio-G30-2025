@@ -1,5 +1,6 @@
 package tp.g30.gestores;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,5 +97,9 @@ public class Gestor_Reserva {
             reservaHabitacionDaoDB.save(item);
         }
         return Long.valueOf(reservaPersistida.getId());
+    }
+
+    public String obtenerNombreResponsableReserva(Long numeroHabitacion, LocalDate fecha) {
+        return reservaDaoDB.obtenerNombreResponsableReserva(numeroHabitacion, fecha);
     }
 }

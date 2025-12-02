@@ -42,32 +42,6 @@ function getDatesInRange(startDate, endDate) {
     return dates;
 }
 
-// function getRoomStatusForDate(room, date) {
-    
-//     let highestPriority = STATUS_PRIORITY.LIBRE;
-//     let finalStatus = 'LIBRE';
-
-//     if (room.historiaEstados) {
-//         room.historiaEstados.forEach(estado => {
-//             const start = new Date(estado.fechaInicio + 'T00:00:00');
-//             const end = new Date(estado.fechaFin + 'T00:00:00'); // Asume que la fecha de fin es exclusiva
-
-//             // Verifica si la fecha actual está dentro del rango del estado
-//             if (date >= start && date <= end) { 
-//                 const currentStatus = estado.estado;
-//                 const currentPriority = STATUS_PRIORITY[currentStatus] || STATUS_PRIORITY.LIBRE;
-                
-//                 // Aplica la lógica de prioridad
-//                 if (currentPriority > highestPriority) {
-//                     highestPriority = currentPriority;
-//                     finalStatus = currentStatus;
-//                 }
-//             }
-//         });
-//     }
-
-//     return finalStatus;
-// }
 function getRoomStatusForDate(room, dateStr) {
     let finalStatus = 'LIBRE'; 
     let highestPriority = STATUS_PRIORITY.LIBRE;
@@ -360,7 +334,7 @@ function ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck) {
     actualizarListaSeleccionModal();
 }
 // --- PEGAR ESTO REEMPLAZANDO LA FUNCIÓN QUE ENCONTRASTE ---
-window.handleCellClick = function (roomNumber, dateClicked, status, cellElement) {
+window.handleCellClick = async function (roomNumber, dateClicked, status, cellElement) {
     const errorMessageElement = document.getElementById('error-message');
 
     // 1. Validaciones Bloqueantes
@@ -393,7 +367,7 @@ window.handleCellClick = function (roomNumber, dateClicked, status, cellElement)
         let conflictoBloqueante = false;
         let conflictoReserva = false;
         let fechasReservadas = [];
-
+        let fechaParaBuscarNombre = null;
         // Validamos el rango completo
         for (let date of datesToCheck) {
             const dateString = normalizeDate(date);
@@ -417,6 +391,9 @@ window.handleCellClick = function (roomNumber, dateClicked, status, cellElement)
                 if (cellStatus === 'RESERVADA') {
                     conflictoReserva = true;
                     fechasReservadas.push(dateString);
+                    if (!fechaParaBuscarNombre) { 
+                        fechaParaBuscarNombre = cell.dataset.date;
+                    }
                 }
             }
         }
@@ -428,13 +405,14 @@ window.handleCellClick = function (roomNumber, dateClicked, status, cellElement)
             return;
         }
 
-        // AQUÍ ESTÁ LA MAGIA: Si hay reserva, mostramos modal en vez de pintar
         if (conflictoReserva) {
-            mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas);
+            let nombreResponsable = "Cargando...";
+            if (fechaParaBuscarNombre) {
+                nombreResponsable = await consultarResponsableReserva(roomNumber, fechaParaBuscarNombre);
+            }
+            mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas, nombreResponsable);
             return; 
         }
-
-        // Si está libre, pintamos directo
         ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck);
     }
 }
@@ -815,7 +793,21 @@ if (btnBuscarResp) {
         }
     });
 }
-
+async function consultarResponsableReserva(numeroHabitacion, fechaStr) {
+    try {
+        const response = await fetch(`/api/reservas/responsable?numeroHabitacion=${numeroHabitacion}&fecha=${fechaStr}`);
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.nombre;
+        } else {
+            return "Desconocido (No encontrado)";
+        }
+    } catch (error) {
+        console.error("Error al obtener responsable:", error);
+        return "Error al consultar";
+    }
+}
 // --- BOTÓN AGREGAR ACOMPAÑANTE ---
 const btnAgregarAcomp = document.getElementById('btnAgregarAcompananteRow');
 if (btnAgregarAcomp) {
@@ -910,7 +902,7 @@ if(btnConfirmarFinal) {
     });
 }
 
-function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas) {
+function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasReservadas, nombreResponsable) {
     const modalEl = document.getElementById('modalDecisionReserva');
     document.body.appendChild(modalEl); 
     const modal = new bootstrap.Modal(modalEl, {
@@ -923,7 +915,10 @@ function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasRes
     if(detalle) {
         detalle.innerHTML = `
             <strong>Habitación:</strong> ${roomNumber}<br>
-            <strong>Fechas reservadas:</strong> ${fechasReservadas.join(', ')}
+            <strong>Fechas reservadas:</strong> ${fechasReservadas.join(', ')}<br>
+            <div class="mt-2 text-danger">
+                <strong>Reservado por:</strong> ${nombreResponsable}
+            </div>
         `;
     }
 

@@ -55,4 +55,18 @@ public class ReservaController {
             );
          }
      }
+    @GetMapping("/responsable")
+    public ResponseEntity<?> obtenerNombreResponsableReserva(
+            @RequestParam Long numeroHabitacion,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        try {
+            String nombreResponsable = gestorReserva.obtenerNombreResponsableReserva(numeroHabitacion, fecha);
+            return ResponseEntity.ok(Map.of("nombre", nombreResponsable));
+        } catch (Exception e) {
+            System.err.println("Error al obtener nombre del responsable de la reserva: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(
+                Map.of("error", "Error interno del servidor al obtener el nombre del responsable: " + e.getMessage())
+            );
+        }
+    }
 }
