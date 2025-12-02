@@ -10,6 +10,7 @@ let roomTypesMap = {};
 let reservasConfirmadas = [];
 
 
+
 let seleccionActual = new Map();
 
 const STATUS_MAPPING = {
@@ -668,7 +669,26 @@ window.showRoomAvailability = async function () {
         const dateToStr = normalizeDate(fechaHasta);
         
         const roomData = await fetchRoomAvailability(dateFromStr, dateToStr);
+        if (reservasConfirmadas && reservasConfirmadas.length > 0) {
+    reservasConfirmadas.forEach(reservaTemp => {
+        const room = roomData.find(r => String(r.numeroHabitacion) === String(reservaTemp.habitacion.numeroHabitacion));
         
+        if (room && reservaTemp.habitacion.historiaEstados && reservaTemp.habitacion.historiaEstados.length > 0) {
+                    // 🛑 Inicializar el array historiaEstados si no existe (seguridad)
+                    if (!room.historiaEstados) {
+                        room.historiaEstados = [];
+                    }
+                    
+                    // Inyectar el estado de ocupación temporal
+                    const estadoSimulado = reservaTemp.habitacion.historiaEstados[0];
+                    room.historiaEstados.push({
+                        estado: 'OCUPADA', 
+                        fechaInicio: estadoSimulado.fechaInicio,
+                        fechaFin: estadoSimulado.fechaFin
+                    });
+                }
+            });
+        }
         roomData.forEach(room => {
         roomTypesMap[room.numeroHabitacion] = room.tipo || 'Estándar'; 
         });
@@ -824,7 +844,8 @@ if (btnDecisionSeguir) {
         }
         if(modalOcupacion) modalOcupacion.hide();
         limpiarGrillaYSeleccion(); 
-        
+
+        window.showRoomAvailability(); 
     });
 }
 const btnDecisionSalir = document.getElementById('btnDecisionSalir');
