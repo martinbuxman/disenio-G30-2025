@@ -1,6 +1,3 @@
-// ==========================================
-// 1. INICIALIZACIÓN Y VARIABLES
-// ==========================================
 const modalOcupacionElement = document.getElementById('modalOcupacion');
 const modalOcupacion = modalOcupacionElement ? new bootstrap.Modal(modalOcupacionElement) : null;
 const modalDecisionElement = document.getElementById('modalDecision');
@@ -25,9 +22,6 @@ const STATUS_MAPPING = {
     'FUERA_DE_SERVICIO': { class: 'status-fuera_servicio', label: 'F' }
 };
 
-// ==========================================
-// 2. UTILIDADES
-// ==========================================
 function normalizeDate(date) { return date.toISOString().substring(0, 10); }
 
 function getDatesInRange(startDate, endDate) {
@@ -66,7 +60,7 @@ function formatDateLabel(date) {
     return `${dayName}, ${date.getDate()}/${date.getMonth() + 1}`;
 }
 
-//buscar huespedes en el backend
+
 async function buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc) {
     const params = new URLSearchParams();
     if (apellido) params.append("apellido", apellido);
@@ -80,7 +74,7 @@ async function buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc) {
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Error en la búsqueda");
-        return await response.json(); // Retorna la lista de huéspedes
+        return await response.json();
     } catch (error) {
         console.error(error);
         return [];
@@ -126,7 +120,6 @@ function renderTablaResultados(huespedes, callbackSeleccion) {
 }
 
 function renderTablaResultadosAcomp(huespedes, targetRowId) {
-    // Añadimos un botón para cerrar la lista de resultados
     const closeButton = `<button type="button" class="btn-close" 
                          onclick="document.getElementById('${targetRowId}').querySelector('.acomp-results-container').innerHTML = ''"></button>`;
 
@@ -172,21 +165,17 @@ function renderTablaResultadosAcomp(huespedes, targetRowId) {
     return html;
 }
 
-// --- LÓGICA DE SELECCIÓN PARA EL ACOMPAÑANTE ---
 window.seleccionarAcompanante = function (huesped, rowId) {
     const row = document.getElementById(rowId);
     if (!row) return;
 
-    // Rellenar los inputs de la fila específica (usando los 4 campos)
     row.querySelector('select[name="tipoDocumentoAcomp"]').value = huesped.tipoDocumento;
     row.querySelector('input[name="numDocumentoAcomp"]').value = huesped.numDocumento;
     row.querySelector('input[name="apellidoAcomp"]').value = huesped.apellido;
     row.querySelector('input[name="nombreAcomp"]').value = huesped.nombre;
     
-    // Limpiar resultados
     row.querySelector('.acomp-results-container').innerHTML = '';
     
-    // Almacenar el ID del huésped para el envío final al backend
     let idInput = row.querySelector('input[name="idAcomp"]');
     if (!idInput) {
          idInput = document.createElement('input');
@@ -198,41 +187,28 @@ window.seleccionarAcompanante = function (huesped, rowId) {
 };
 
 
-// --- FUNCIÓN DE BÚSQUEDA Y SELECCIÓN PARA ACOMPAÑANTES ---
 async function handleAcompananteSearch(event) {
     const btn = event.currentTarget;
     const rowId = btn.dataset.rowId;
     const row = document.getElementById(rowId);
     
-    // Obtener los inputs de la fila
     const tipoDoc = row.querySelector('select[name="tipoDocumentoAcomp"]').value.trim();
     const nroDoc = row.querySelector('input[name="numDocumentoAcomp"]').value.trim();
     const apellido = row.querySelector('input[name="apellidoAcomp"]').value.trim();
     const nombre = row.querySelector('input[name="nombreAcomp"]').value.trim();
-    // El contenedor de resultados ya no está en la misma celda, sino posicionado en la última
     const resultsContainer = row.querySelector('.acomp-results-container');
     
-    // Ya NO SE VALIDA: Si todos están vacíos, buscarHuespedesBackend devolverá todos los huéspedes.
-    
-    // Interfaz de carga
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-    resultsContainer.innerHTML = ''; // Limpiar resultados anteriores
+    resultsContainer.innerHTML = ''; 
 
-    // Buscar
     const resultados = await buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc);
 
-    // Renderizar Resultados
     resultsContainer.innerHTML = renderTablaResultadosAcomp(resultados, rowId);
     
-    // Restaurar botón
     btn.disabled = false;
     btn.innerHTML = '🔍';
 }
-// ==========================================
-// 3. GRILLA (CU05)
-// ==========================================
-
 
 function generateAvailabilityGrid(dates, rooms) {
     const occupancyGrid = document.getElementById('availability-timeline');
@@ -292,9 +268,6 @@ function generateAvailabilityGrid(dates, rooms) {
         occupancyGrid.appendChild(dataRow);
     });
 }
-// ==========================================
-// 4. LÓGICA DE SELECCIÓN (RANGO DE OCUPACIÓN - TWO-CLICK)
-// ==========================================
 
 function actualizarEstadoBotonSiguiente() {
     const btn = document.getElementById('btnVerificarSeleccion');
@@ -302,7 +275,6 @@ function actualizarEstadoBotonSiguiente() {
         btn.disabled = seleccionActual.size === 0;
     }
 }
-// --- PEGAR ESTO ANTES DE window.handleCellClick ---
 function ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck) {
     const inicioStr = normalizeDate(d1);
     const finStr = normalizeDate(d2);
@@ -333,17 +305,14 @@ function ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck) {
     delete selectionState[roomNumber];
     actualizarListaSeleccionModal();
 }
-// --- PEGAR ESTO REEMPLAZANDO LA FUNCIÓN QUE ENCONTRASTE ---
 window.handleCellClick = async function (roomNumber, dateClicked, status, cellElement) {
     const errorMessageElement = document.getElementById('error-message');
 
-    // 1. Validaciones Bloqueantes
     if (status === 'OCUPADA' || status === 'FUERA_DE_SERVICIO') {
         alert(`No puedes iniciar una selección en una fecha que está ${status}.`);
         return;
     }
 
-    // --- PRIMER CLICK ---
     if (!selectionState[roomNumber]) {
         if (seleccionActual.size > 0 || Object.keys(selectionState).length > 0) {
             limpiarSeleccionVisualActual();
@@ -351,7 +320,6 @@ window.handleCellClick = async function (roomNumber, dateClicked, status, cellEl
         selectionState[roomNumber] = dateClicked;
         cellElement.classList.add('selection-start');
 
-    // --- SEGUNDO CLICK ---
     } else {      
         const fechaInicioStr = selectionState[roomNumber];
         const fechaFinStr = dateClicked;
@@ -368,15 +336,13 @@ window.handleCellClick = async function (roomNumber, dateClicked, status, cellEl
         let conflictoReserva = false;
         let fechasReservadas = [];
         let fechaParaBuscarNombre = null;
-        // Validamos el rango completo
         for (let date of datesToCheck) {
             const dateString = normalizeDate(date);
             const cell = document.querySelector(`.availability-cell[data-room="${roomNumber}"][data-date="${dateString}"]`);
             
             if (cell) {
                 const cellStatus = cell.dataset.status; 
-                
-                // Error Bloqueante
+
                 if (cellStatus === 'OCUPADA' || cellStatus === 'FUERA_DE_SERVICIO') {
                     conflictoBloqueante = true;
                     if (errorMessageElement) {
@@ -387,7 +353,6 @@ window.handleCellClick = async function (roomNumber, dateClicked, status, cellEl
                     break;
                 }
                 
-                // Advertencia (RESERVADA - Flujo 3.D)
                 if (cellStatus === 'RESERVADA') {
                     conflictoReserva = true;
                     fechasReservadas.push(dateString);
@@ -436,9 +401,8 @@ function limpiarSeleccionVisualActual() {
         });
     });
     
-    // 2. Limpiar el estado de selección de datos
     seleccionActual.clear();
-    selectionState = {}; // Limpia el click inicial pendiente en CUALQUIER habitación
+    selectionState = {};
     
     const errorMessageElement = document.getElementById('error-message'); 
     if (errorMessageElement) {
@@ -546,7 +510,7 @@ function showDecisionModal() {
     
     modalDecision.show();
 }
-// Función auxiliar para limpiar y reestablecer la grilla
+
 function limpiarGrillaYSeleccion() {
     limpiarSeleccionVisualActual();
     
@@ -557,8 +521,6 @@ function limpiarGrillaYSeleccion() {
     }
 }
 
-
-// --- FUNCIÓN FINAL DE ENVÍO ---
 const API_URL_OCUPACION = '/api/ocupacion/checkin'; 
 
 async function enviarOcupacionesAlBackend(ocupaciones) {
@@ -582,7 +544,7 @@ async function enviarOcupacionesAlBackend(ocupaciones) {
         if (response.ok) {
             const result = await response.text();
             
-            console.log("✅ Éxito al guardar las ocupaciones. Respuesta del servidor:", result);
+            console.log(" Éxito al guardar las ocupaciones. Respuesta del servidor:", result);
             
             reservasConfirmadas = [];
             seleccionActual.clear(); 
@@ -591,11 +553,11 @@ async function enviarOcupacionesAlBackend(ocupaciones) {
             window.location.reload(); 
         } else {
             const errorText = await response.text();
-            console.error(`❌ Error al enviar ocupaciones. Código: ${response.status}`, errorText);
+            console.error(` Error al enviar ocupaciones. Código: ${response.status}`, errorText);
             alert(`Hubo un error (${response.status}) al intentar ocupar las habitaciones. Consulte la consola para más detalles.`);
         }
     } catch (error) {
-        console.error("❌ Error de red/conexión:", error);
+        console.error(" Error de red/conexión:", error);
         alert("No se pudo conectar con el servidor para realizar el check-in.");
     }
 }
@@ -643,10 +605,6 @@ async function fetchRoomAvailability(startDate, endDate) {
         throw new Error(`No se pudo conectar con el servidor backend. Error: ${error.message}.`);
     }
 }
-
-// ==========================================
-// 5. FUNCIONES GLOBALES Y EVENTOS
-// ==========================================
 
 window.showRoomAvailability = async function () {
     const fechaDesdeInput = document.getElementById('fechaDesde');
@@ -735,8 +693,6 @@ window.showRoomAvailability = async function () {
     }
 }
 
-
-// --- BOTÓN SIGUIENTE (ABRIR MODAL) ---
 const btnVerificar = document.getElementById('btnVerificarSeleccion');
 if(btnVerificar) {
     btnVerificar.addEventListener('click', function() {
@@ -766,27 +722,22 @@ if (btnBuscarResp) {
         const tipoDoc = document.getElementById('busqTipoDoc').value;
         const nroDoc = document.getElementById('busqNroDoc').value;
 
-        // 1. Buscar
         const resultados = await buscarHuespedesBackend(apellido, nombre, tipoDoc, nroDoc);
 
-        // 2. Renderizar Resultados
-        const contenedorResultados = document.getElementById('resultadosBusquedaResponsable'); // Asegúrate de crear este div en tu HTML
+        const contenedorResultados = document.getElementById('resultadosBusquedaResponsable');
         if (contenedorResultados) {
             contenedorResultados.innerHTML = renderTablaResultados(resultados);
 
-            // 3. Asignar eventos a los botones "Seleccionar"
             contenedorResultados.querySelectorAll('.btn-seleccionar-huesped').forEach(btn => {
                 btn.addEventListener('click', function () {
                     const id = this.dataset.id;
                     const nombreCompleto = `${this.dataset.apellido}, ${this.dataset.nombre}`;
                     const doc = `${this.dataset.tipo} ${this.dataset.doc}`;
 
-                    // Rellenar datos del responsable
                     document.getElementById('infoResponsable').classList.remove('d-none');
                     document.getElementById('nombreResponsable').textContent = `${nombreCompleto} (${doc})`;
                     document.getElementById('idResponsableInput').value = id;
                     
-                    // Limpiar resultados
                     contenedorResultados.innerHTML = '';
                 });
             });
@@ -808,7 +759,7 @@ async function consultarResponsableReserva(numeroHabitacion, fechaStr) {
         return "Error al consultar";
     }
 }
-// --- BOTÓN AGREGAR ACOMPAÑANTE ---
+
 const btnAgregarAcomp = document.getElementById('btnAgregarAcompananteRow');
 if (btnAgregarAcomp) {
     btnAgregarAcomp.addEventListener('click', function () {
@@ -888,9 +839,6 @@ if (btnDecisionSalir) {
     });
 }
 
-
-
-// --- BOTÓN CONFIRMAR FINAL
 const btnConfirmarFinal = document.getElementById('btnConfirmarOcupacionFinal');
 if(btnConfirmarFinal) {
     btnConfirmarFinal.addEventListener('click', function() {
@@ -922,7 +870,6 @@ function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasRes
         `;
     }
 
-    // Botón OCUPAR IGUAL
     const btnOcupar = document.getElementById('btnOcuparIgual');
     const nuevoBtnOcupar = btnOcupar.cloneNode(true);
     btnOcupar.parentNode.replaceChild(nuevoBtnOcupar, btnOcupar);
@@ -932,7 +879,6 @@ function mostrarModalDecisionReserva(roomNumber, d1, d2, datesToCheck, fechasRes
         ejecutarSeleccionVisual(roomNumber, d1, d2, datesToCheck);
     });
 
-    // Botón VOLVER
     const btnVolver = document.getElementById('btnVolverReserva');
     const nuevoBtnVolver = btnVolver.cloneNode(true);
     btnVolver.parentNode.replaceChild(nuevoBtnVolver, btnVolver);

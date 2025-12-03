@@ -14,19 +14,16 @@ button {
     font-weight: bold;
 }
 
-/* --- PEGAR AL FINAL DE style.css --- */
 
-/* Forzar que el modal de Reserva quede SIEMPRE al frente de todo */
 #modalDecisionReserva {
-    z-index: 1060 !important; /* Más alto que el backdrop (fondo oscuro) */
+    z-index: 1060 !important; 
 }
 
-/* Asegurar que el fondo oscuro quede un nivel más abajo */
 .modal-backdrop {
     z-index: 1050 !important;
 }
 
-/* Opcional: Esto le pone un borde amarillo para que destaque más sobre el gris */
+
 #modalDecisionReserva .modal-content {
     border: 2px solid #ffc107; 
     box-shadow: 0 0 20px rgba(0,0,0,0.5);

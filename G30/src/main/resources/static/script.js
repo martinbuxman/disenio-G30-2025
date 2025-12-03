@@ -25,6 +25,13 @@ const modalHuespedGuardado = modalHuespedGuardadoElement
     : null;
 
 let datosHuespedPendientes = null; 
+
+const STATUS_PRIORITY = {
+    'FUERA_DE_SERVICIO': 4, 
+    'OCUPADA': 3,         
+    'RESERVADA': 2,        
+    'LIBRE': 1              
+};
 const STATUS_MAPPING = {
     'LIBRE': { class: 'status-libre', label: 'L' },
     'OCUPADA': { class: 'status-ocupada', label: 'O' },
@@ -57,18 +64,25 @@ function formatDateLabel(date) {
 }
 
 function getRoomStatusForDate(room, dateStr) {
-    let currentStatus = 'LIBRE'; 
+    let finalStatus = 'LIBRE'; 
+    let highestPriority = STATUS_PRIORITY.LIBRE;
+    if(!room.historiaEstados) return 'LIBRE';
+    
     for (const estado of room.historiaEstados) {
-        const fechaInicio = new Date(estado.fechaInicio + 'T00:00:00');
-        const fechaFin = new Date(estado.fechaFin + 'T00:00:00');
-        const targetDate = new Date(dateStr + 'T00:00:00');
+        const fInicio = estado.fechaInicio; 
+        const fFin = estado.fechaFin; 
 
-        if (targetDate >= fechaInicio && targetDate <= fechaFin) {
+        if (dateStr >= fInicio && dateStr <= fFin) {
             currentStatus = estado.estado;
-            break; 
+            const currentPriority = STATUS_PRIORITY[currentStatus] || STATUS_PRIORITY.LIBRE; 
+            
+            if (currentPriority > highestPriority) {
+                highestPriority = currentPriority;
+                finalStatus = currentStatus; 
+            }
         }
     }
-    return currentStatus;
+    return finalStatus;
 }
 
 
@@ -89,9 +103,6 @@ function limpiarErrores() {
     }
 }
 
-/**
- * @param {Object} errores - Objeto JSON con {campo: mensaje, ...}
- */
 function mostrarErroresEnPantalla(errores) {
 
     limpiarErrores(); 
@@ -145,11 +156,6 @@ function mostrarErroresEnPantalla(errores) {
         }
     }
 }
-/**
- * @param {Object} room -
- * @param {Array<Date>} dates 
- * @returns {boolean} 
- */
 function isRoomPartiallyAvailable(room, dates) {
     for (const date of dates) {
         const dateStr = normalizeDate(date); 
